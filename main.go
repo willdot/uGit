@@ -10,7 +10,8 @@ func main() {
 
 	fmt.Print("ss")
 
-	output, err := RunCommandWithResult("gist", "branch")
+	commander := RealCommander{}
+	output, err := RunCommandWithResult(commander, "git", "branch", "-a")
 
 	if err != nil {
 		fmt.Printf("error: %v", errors.WithMessage(err, ""))

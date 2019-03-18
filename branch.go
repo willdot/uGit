@@ -29,3 +29,11 @@ func GetCurrentBranch(branches []string) (string, error) {
 
 	return "", ErrNoCurrentBranchFound
 }
+
+// CheckoutBranch checks out a branch
+func CheckoutBranch(commander Commander, branch string) error {
+
+	_, err := commander.combinedOutput("git", "checkout", branch)
+
+	return err
+}

@@ -13,3 +13,10 @@ func RunCommandWithResult(command string, args ...string) (string, error) {
 
 	return string(output), err
 }
+
+// RunCommandWithoutResult will run a command and only return an error if one is found
+func RunCommandWithoutResult(command string, args ...string) error {
+	_, err := RunCommandWithResult(command, args...)
+
+	return err
+}

@@ -1,36 +1,25 @@
 package main
 
-import (
-	"fmt"
-	"io"
-	"os"
-	"strings"
-)
+import "fmt"
 
 func main() {
 
-	output, _ := RunCommandWithResult("git", "branch")
-	branches := splitBranches(string(output))
+	fmt.Print("ss")
 
-	for _, r := range branches {
+	output, err := RunCommandWithResult("git", "branch")
 
-		if r == "" {
-			continue
-		}
-		if string(r[0]) == "*" {
-			fmt.Printf("Current branch: %v\n", r)
-		} else {
-			fmt.Println(r)
-		}
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
-}
 
-func stdout() io.Writer {
-	return os.Stdout
-}
+	branches := SplitBranches(string(output))
 
-func splitBranches(s string) []string {
-	result := strings.Split(s, "\n")
+	currentBranch, err := GetCurrentBranch(branches)
 
-	return result
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Printf("Current branch: %s", currentBranch)
 }

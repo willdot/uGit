@@ -1,15 +1,19 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/pkg/errors"
+)
 
 func main() {
 
 	fmt.Print("ss")
 
-	output, err := RunCommandWithResult("git", "branch")
+	output, err := RunCommandWithResult("gist", "branch")
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("error: %v", errors.WithMessage(err, ""))
 		return
 	}
 
@@ -18,7 +22,7 @@ func main() {
 	currentBranch, err := GetCurrentBranch(branches)
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("error: %v", errors.WithMessage(err, ""))
 		return
 	}
 	fmt.Printf("Current branch: %s", currentBranch)

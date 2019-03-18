@@ -4,7 +4,7 @@ import "testing"
 
 func TestCommandWithResultReturnsAStringValue(t *testing.T) {
 	dontWant := ""
-	got, _ := RunCommandWithResult("ls")
+	got, _ := RunCommandWithResult("git")
 
 	if dontWant == got {
 		t.Errorf("didn't want nothing, but got '%s'", got)

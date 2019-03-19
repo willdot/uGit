@@ -3,8 +3,9 @@ package root
 import (
 	"fmt"
 	"strings"
-	"uGit/app/pkg/git"
-	"uGit/app/pkg/run"
+
+	"github.com/willdot/uGit/app/pkg/git"
+	"github.com/willdot/uGit/app/pkg/run"
 
 	"github.com/manifoldco/promptui"
 	"github.com/pkg/errors"

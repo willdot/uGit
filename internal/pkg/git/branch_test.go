@@ -4,8 +4,22 @@ import (
 	"reflect"
 	"strings"
 	"testing"
-	"uGit/internal/pkg/run"
 )
+
+// FakeCommander is used for mocking
+type FakeCommander struct {
+	Result []byte
+	Err    error
+}
+
+func (f *FakeCommander) CombinedOutput(command string, args ...string) ([]byte, error) {
+
+	if f.Err != nil {
+		return nil, f.Err
+	}
+
+	return f.Result, nil
+}
 
 func TestSplitBranch(t *testing.T) {
 	want := []string{"Dev", "Master"}
@@ -44,12 +58,28 @@ func TestGetCurrentBranch(t *testing.T) {
 
 }
 
+func TestGetBranches(t *testing.T) {
+	t.Run("get local branches", func(t *testing.T) {
+		want := ""
+
+		fake := &FakeCommander{
+			Result: []byte(want),
+		}
+
+		got, _ := GetBranches(fake)
+
+		if got != want {
+			t.Errorf("want '%s' but got '%s'", got, want)
+		}
+	})
+}
+
 func TestCheckout(t *testing.T) {
 
 	t.Run("switched branch", func(t *testing.T) {
 		want := "Switched to branch 'fake'"
 
-		fake := run.FakeCommander{
+		fake := &FakeCommander{
 			Result: []byte(want),
 		}
 
@@ -63,7 +93,7 @@ func TestCheckout(t *testing.T) {
 	t.Run("branch doesn't exist", func(t *testing.T) {
 		want := ErrBranchDoesNotExist
 
-		fake := run.FakeCommander{
+		fake := &FakeCommander{
 			Err: ErrBranchDoesNotExist,
 		}
 

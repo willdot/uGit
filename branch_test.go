@@ -19,7 +19,7 @@ func TestGetCurrentBranch(t *testing.T) {
 	t.Run("returns the current branch", func(t *testing.T) {
 		want := "*Dev"
 
-		input := []string{"*Dev", "Master"}
+		input := []string{"", "*Dev", "Master"}
 		got, _ := GetCurrentBranch(input)
 
 		if got != want {

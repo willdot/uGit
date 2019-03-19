@@ -51,7 +51,7 @@ func TestCheckout(t *testing.T) {
 
 	fake := fakeCommander{}
 
-	got := CheckoutBranch(fake, "fake")
+	got, _ := CheckoutBranch(fake, "fake")
 
 	fmt.Println(got)
 }

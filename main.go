@@ -11,20 +11,12 @@ func main() {
 	fmt.Print("ss")
 
 	commander := RealCommander{}
-	output, err := RunCommandWithResult(commander, "git", "branch", "-a")
+	output, err := RunCommandWithResult(commander, "git", "checkout", "master")
 
 	if err != nil {
 		fmt.Printf("error: %v", errors.WithMessage(err, ""))
 		return
 	}
 
-	branches := SplitBranches(string(output))
-
-	currentBranch, err := GetCurrentBranch(branches)
-
-	if err != nil {
-		fmt.Printf("error: %v", errors.WithMessage(err, ""))
-		return
-	}
-	fmt.Printf("Current branch: %s", currentBranch)
+	fmt.Println(output)
 }

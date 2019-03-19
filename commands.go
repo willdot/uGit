@@ -2,8 +2,6 @@ package main
 
 import (
 	"os/exec"
-
-	"github.com/pkg/errors"
 )
 
 // Commander is an interface for running os/exec Commands
@@ -18,10 +16,18 @@ func (r RealCommander) combinedOutput(command string, args ...string) ([]byte, e
 	return exec.Command(command, args...).CombinedOutput()
 }
 
-type fakeCommander struct{}
+type fakeCommander struct {
+	result string
+	err    error
+}
 
 func (f fakeCommander) combinedOutput(command string, args ...string) ([]byte, error) {
-	return nil, errors.New("No branch exists")
+
+	if f.err != nil {
+		return nil, f.err
+	}
+
+	return nil, nil
 }
 
 // RunCommandWithResult will run a command and return the output or an error

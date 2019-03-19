@@ -31,9 +31,9 @@ func GetCurrentBranch(branches []string) (string, error) {
 }
 
 // CheckoutBranch checks out a branch
-func CheckoutBranch(commander Commander, branch string) error {
+func CheckoutBranch(commander Commander, branch string) (string, error) {
 
-	_, err := commander.combinedOutput("git", "checkout", branch)
+	result, err := commander.combinedOutput("git", "checkout", branch)
 
-	return err
+	return string(result), err
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -44,14 +43,4 @@ func TestCommandWithoutResult(t *testing.T) {
 			t.Errorf("wanted an error but didn't get one")
 		}
 	})
-}
-
-func TestCheckout(t *testing.T) {
-	//want := ""
-
-	fake := fakeCommander{}
-
-	got, _ := CheckoutBranch(fake, "fake")
-
-	fmt.Println(got)
 }

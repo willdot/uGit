@@ -17,7 +17,7 @@ func (r RealCommander) combinedOutput(command string, args ...string) ([]byte, e
 }
 
 type fakeCommander struct {
-	result string
+	result []byte
 	err    error
 }
 
@@ -27,7 +27,7 @@ func (f fakeCommander) combinedOutput(command string, args ...string) ([]byte, e
 		return nil, f.err
 	}
 
-	return nil, nil
+	return f.result, nil
 }
 
 // RunCommandWithResult will run a command and return the output or an error

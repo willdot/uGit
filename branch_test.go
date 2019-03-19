@@ -2,6 +2,7 @@ package main
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -40,4 +41,35 @@ func TestGetCurrentBranch(t *testing.T) {
 		}
 	})
 
+}
+
+func TestCheckout(t *testing.T) {
+
+	t.Run("switched branch", func(t *testing.T) {
+		want := "Switched to branch 'fake'"
+
+		fake := fakeCommander{
+			result: []byte(want),
+		}
+
+		got, _ := CheckoutBranch(fake, "fake")
+
+		if !strings.Contains(got, want) {
+			t.Errorf("wanted '%s' but got '%s'", want, got)
+		}
+	})
+
+	t.Run("branch doesn't exist", func(t *testing.T) {
+		want := ErrBranchDoesNotExist
+
+		fake := fakeCommander{
+			err: ErrBranchDoesNotExist,
+		}
+
+		_, got := CheckoutBranch(fake, "fake")
+
+		if got != want {
+			t.Errorf("wanted '%s' but got '%s'", want, got)
+		}
+	})
 }

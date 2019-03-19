@@ -1,12 +1,16 @@
 package main
 
 import (
-	"errors"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 // ErrNoCurrentBranchFound is an error returned when the input branches doesn't contain a current branch indicator
 var ErrNoCurrentBranchFound = errors.New("no current branch found")
+
+// ErrBranchDoesNotExist is an error for when the branch asked to be checked out, doesn't exist
+var ErrBranchDoesNotExist = errors.New("Cannot checkout branch as it doesn't exist")
 
 // SplitBranches takes a string of branches with newline separators and splits them into a slice
 func SplitBranches(s string) []string {

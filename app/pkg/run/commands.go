@@ -12,6 +12,7 @@ type Commander interface {
 // RealCommander is a real struct that can be used
 type RealCommander struct{}
 
+// CombinedOutput runs an os command and returns the result
 func (r RealCommander) CombinedOutput(command string, args ...string) ([]byte, error) {
 	return exec.Command(command, args...).CombinedOutput()
 }

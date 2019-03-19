@@ -19,6 +19,11 @@ var checkoutCmd = &cobra.Command{
 		commander := run.RealCommander{}
 		result, err := git.GetBranches(commander)
 
+		if err != nil {
+			fmt.Printf("Prompt failed %v\n", err)
+			return
+		}
+
 		branches := git.SplitBranches(result)
 
 		branches = git.RemoveCurrentBranch(branches)

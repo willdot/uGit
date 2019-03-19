@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	cmd.Execute()
+	root.Execute()
 	//fmt.Printf("error: %v", errors.WithMessage(err, ""))
 }

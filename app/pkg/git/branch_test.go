@@ -31,6 +31,16 @@ func TestSplitBranch(t *testing.T) {
 	}
 }
 
+func TestRemoveCurrentBranch(t *testing.T) {
+	want := []string{"dev", "master"}
+	input := []string{"* current", "dev", "master"}
+	got := RemoveCurrentBranch(input)
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %v want %v", got, want)
+	}
+}
+
 func TestGetCurrentBranch(t *testing.T) {
 	t.Run("returns the current branch", func(t *testing.T) {
 		want := "*Dev"

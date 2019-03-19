@@ -16,16 +16,15 @@ var checkoutCmd = &cobra.Command{
 	Use:   "checkout",
 	Short: "Checkout a branch",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Select a branch")
-
 		commander := run.RealCommander{}
 		result, err := git.GetBranches(commander)
 
 		branches := git.SplitBranches(result)
 
 		prompt := promptui.Select{
-			Label: "Select branch",
-			Items: branches,
+			Label:    "Select branch",
+			Items:    branches,
+			HideHelp: true,
 		}
 
 		_, selection, err := prompt.Run()

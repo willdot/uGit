@@ -35,6 +35,13 @@ func GetCurrentBranch(branches []string) (string, error) {
 	return "", ErrNoCurrentBranchFound
 }
 
+// GetBranches gets all local branches
+func GetBranches(commander run.Commander) (string, error) {
+	result, err := run.CommandWithResult(commander, "git", "branch")
+
+	return result, err
+}
+
 // CheckoutBranch checks out a branch
 func CheckoutBranch(commander run.Commander, branch string) (string, error) {
 

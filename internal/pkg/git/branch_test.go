@@ -1,9 +1,10 @@
-package main
+package git
 
 import (
 	"reflect"
 	"strings"
 	"testing"
+	"uGit/internal/pkg/run"
 )
 
 func TestSplitBranch(t *testing.T) {
@@ -48,8 +49,8 @@ func TestCheckout(t *testing.T) {
 	t.Run("switched branch", func(t *testing.T) {
 		want := "Switched to branch 'fake'"
 
-		fake := fakeCommander{
-			result: []byte(want),
+		fake := run.FakeCommander{
+			Result: []byte(want),
 		}
 
 		got, _ := CheckoutBranch(fake, "fake")
@@ -62,8 +63,8 @@ func TestCheckout(t *testing.T) {
 	t.Run("branch doesn't exist", func(t *testing.T) {
 		want := ErrBranchDoesNotExist
 
-		fake := fakeCommander{
-			err: ErrBranchDoesNotExist,
+		fake := run.FakeCommander{
+			Err: ErrBranchDoesNotExist,
 		}
 
 		_, got := CheckoutBranch(fake, "fake")

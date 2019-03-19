@@ -1,7 +1,8 @@
-package main
+package git
 
 import (
 	"strings"
+	"uGit/internal/pkg/run"
 
 	"github.com/pkg/errors"
 )
@@ -35,9 +36,9 @@ func GetCurrentBranch(branches []string) (string, error) {
 }
 
 // CheckoutBranch checks out a branch
-func CheckoutBranch(commander Commander, branch string) (string, error) {
+func CheckoutBranch(commander run.Commander, branch string) (string, error) {
 
-	result, err := commander.combinedOutput("git", "checkout", branch)
+	result, err := run.CommandWithResult(commander, "git", "checkout", branch)
 
 	return string(result), err
 }

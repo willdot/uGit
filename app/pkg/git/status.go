@@ -1,6 +1,7 @@
 package git
 
 import (
+	"fmt"
 	"strings"
 	"uGit/app/pkg/run"
 )
@@ -24,6 +25,7 @@ func GetFiles(s string) []string {
 	for i := 0; i < len(x); i++ {
 		line := strings.Trim(x[i], " ")
 		line = strings.TrimSuffix(line, "\n")
+		fmt.Println(line)
 
 		if line == "Untracked files:" {
 			untracked = true

@@ -25,7 +25,7 @@ func GetFiles(s string) []string {
 	for i := 0; i < len(x); i++ {
 		line := strings.Trim(x[i], " ")
 		line = strings.TrimSuffix(line, "\n")
-		fmt.Println(line)
+		fmt.Printf("%s.", line)
 
 		if line == "Untracked files:" {
 			untracked = true

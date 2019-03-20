@@ -12,19 +12,57 @@ func Status(commander run.ICommander) (string, error) {
 	return string(result), err
 }
 
-// GetUntrackedFiles will return a slice of files that aren't tracked
-func GetUntrackedFiles(s string) []string {
+// GetFiles will return a slice of files that aren't tracked
+func GetFiles(s string) []string {
 
-	x := strings.Split(s, `(use "git add <file>..." to include in what will be committed)`)[1]
-	x = strings.Split(x, "nothing added")[0]
+	var untracked bool
 
-	untrackedSection := strings.Split(x, "\n")
+	x := strings.Split(s, "\t")
+
 	var result []string
-	for i := 0; i < len(untrackedSection); i++ {
-		if untrackedSection[i] != "\t" && untrackedSection[i] != "" {
-			file := strings.Replace(untrackedSection[i], "\t", "", -1)
-			file = strings.Trim(file, " ")
-			result = append(result, file)
+
+	for i := 0; i < len(x); i++ {
+		line := strings.Trim(x[i], " ")
+		line = strings.TrimSuffix(line, "\n")
+
+		if line == "Untracked files:" {
+			untracked = true
+			break
+		}
+
+		if line == "nothing to commit, working tree clean" {
+			return nil
+		}
+	}
+	if untracked {
+		result = getUntracked(x)
+	}
+
+	return result
+}
+
+func getUntracked(s []string) []string {
+
+	var result []string
+
+	for i := 0; i < len(s); i++ {
+		line := strings.Trim(s[i], " ")
+		line = strings.TrimSuffix(line, "\n")
+
+		if line == "Untracked files:" {
+			for x := i + 1; x < len(s); x++ {
+				line = strings.Trim(s[x], " ")
+				line = strings.TrimSuffix(line, "\n\n")
+				line = strings.TrimSuffix(line, "\n")
+
+				if strings.HasPrefix(line, "no changes added to commit") || strings.HasPrefix(line, "nothing added to commit ") {
+					break
+				}
+
+				if !strings.HasPrefix(line, `(use "git add <file>..."`) && line != "" {
+					result = append(result, line)
+				}
+			}
 		}
 	}
 

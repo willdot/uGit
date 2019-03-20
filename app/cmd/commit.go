@@ -13,6 +13,24 @@ var commitCmd = &cobra.Command{
 	Short: "Commit changes",
 	Run: func(cmd *cobra.Command, args []string) {
 
+		untrackedFilesCommander := run.Commander{
+			Command: "git",
+			Args:    []string{"status"},
+		}
+
+		x, err := git.Status(untrackedFilesCommander)
+
+		untrackedFiles := git.GetFiles(x)
+
+		if err != nil {
+			fmt.Printf("Prompt failed %v\n", err)
+			return
+		}
+
+		if len(untrackedFiles) > 0 {
+			fmt.Println(untrackedFiles)
+		}
+
 		commitCommander := run.Commander{
 			Command: "git",
 			Args:    []string{"commit", "-am", "test commit"},

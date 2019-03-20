@@ -1,7 +1,6 @@
 package git
 
 import (
-	"fmt"
 	"strings"
 	"uGit/app/pkg/run"
 )
@@ -18,14 +17,12 @@ func GetFiles(s string) []string {
 
 	var untracked bool
 
-	x := strings.Split(s, "\t")
+	x := strings.Split(s, "\n")
 
 	var result []string
 
 	for i := 0; i < len(x); i++ {
-		line := strings.Trim(x[i], " ")
-		line = strings.TrimSuffix(line, "\n")
-		fmt.Println(line + ".")
+		line := strings.TrimSpace(x[i])
 
 		if line == "Untracked files:" {
 			untracked = true
@@ -48,14 +45,11 @@ func getUntracked(s []string) []string {
 	var result []string
 
 	for i := 0; i < len(s); i++ {
-		line := strings.Trim(s[i], " ")
-		line = strings.TrimSuffix(line, "\n")
+		line := strings.TrimSpace(s[i])
 
 		if line == "Untracked files:" {
 			for x := i + 1; x < len(s); x++ {
-				line = strings.Trim(s[x], " ")
-				line = strings.TrimSuffix(line, "\n\n")
-				line = strings.TrimSuffix(line, "\n")
+				line = strings.TrimSpace(s[x])
 
 				if strings.HasPrefix(line, "no changes added to commit") || strings.HasPrefix(line, "nothing added to commit ") {
 					break

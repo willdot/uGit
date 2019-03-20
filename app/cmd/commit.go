@@ -27,9 +27,9 @@ var commitCmd = &cobra.Command{
 			return
 		}
 
-		fmt.Println(x)
 		if len(untrackedFiles) > 0 {
-			fmt.Println(untrackedFiles)
+			//Get user to select files to commit
+
 			return
 		}
 

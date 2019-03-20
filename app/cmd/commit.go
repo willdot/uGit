@@ -27,6 +27,7 @@ var commitCmd = &cobra.Command{
 			return
 		}
 
+		fmt.Println(untrackedFiles)
 		if len(untrackedFiles) > 0 {
 			fmt.Println(untrackedFiles)
 			return

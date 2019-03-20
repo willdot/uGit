@@ -11,13 +11,13 @@ type Commander interface {
 
 // RealCommander is a real struct that can be used
 type RealCommander struct {
-	command string
-	args    []string
+	Command string
+	Args    []string
 }
 
 // CombinedOutput runs an os command and returns the result
 func (r RealCommander) CombinedOutput() ([]byte, error) {
-	return exec.Command(r.command, r.args...).CombinedOutput()
+	return exec.Command(r.Command, r.Args...).CombinedOutput()
 }
 
 // CommandWithResult will run a command and return the output or an error
@@ -27,10 +27,3 @@ func CommandWithResult(commander Commander) (string, error) {
 
 	return string(output), err
 }
-
-// CommandWithoutResult will run a command and only return an error if one is found
-/*func CommandWithoutResult(commander Commander) error {
-	_, err := CommandWithResult(commander)
-
-	return err
-}*/

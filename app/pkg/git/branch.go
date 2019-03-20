@@ -3,7 +3,7 @@ package git
 import (
 	"strings"
 
-	"github.com/willdot/uGit/app/pkg/run"
+	"uGit/app/pkg/run"
 
 	"github.com/pkg/errors"
 )
@@ -38,7 +38,7 @@ func GetCurrentBranch(branches []string) (string, error) {
 
 // GetBranches gets all local branches
 func GetBranches(commander run.Commander) (string, error) {
-	result, err := run.CommandWithResult(commander, "git", "branch")
+	result, err := run.CommandWithResult(commander)
 
 	return result, err
 }
@@ -61,7 +61,7 @@ func RemoveCurrentBranch(branches []string) []string {
 // CheckoutBranch checks out a branch
 func CheckoutBranch(commander run.Commander, branch string) (string, error) {
 
-	result, err := run.CommandWithResult(commander, "git", "checkout", branch)
+	result, err := run.CommandWithResult(commander)
 
 	return string(result), err
 }

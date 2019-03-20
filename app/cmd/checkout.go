@@ -1,6 +1,13 @@
 package root
 
 import (
+	"fmt"
+	"strings"
+	"uGit/app/pkg/git"
+	"uGit/app/pkg/run"
+
+	"github.com/manifoldco/promptui"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -10,9 +17,9 @@ var checkoutCmd = &cobra.Command{
 	Short: "Checkout a branch",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		/*branchCommander := run.RealCommander{
-			command: "git",
-			args:    []string{"branch"},
+		branchCommander := run.RealCommander{
+			Command: "git",
+			Args:    []string{"branch"},
 		}
 		result, err := git.GetBranches(branchCommander)
 
@@ -39,17 +46,17 @@ var checkoutCmd = &cobra.Command{
 		}
 
 		checkoutCommander := run.RealCommander{
-			command: "git",
-			args:    []string{"checkout", strings.Replace(selection, " ", "", -1)},
+			Command: "git",
+			Args:    []string{"checkout"},
 		}
 
-		x, err := git.CheckoutBranch(commander)
+		x, err := git.CheckoutBranch(checkoutCommander, strings.Replace(selection, " ", "", -1))
 
 		if err != nil {
 			fmt.Printf("error: %v", errors.WithMessage(err, ""))
 		}
 
-		fmt.Println(x)*/
+		fmt.Println(x)
 	},
 }
 

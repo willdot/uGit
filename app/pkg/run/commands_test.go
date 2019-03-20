@@ -9,8 +9,8 @@ func TestCommandWithResultReturnsAStringValue(t *testing.T) {
 	t.Run("run and returns a string", func(t *testing.T) {
 		dontWant := ""
 		commander := RealCommander{
-			command: "go",
-			args:    []string{"env"},
+			Command: "go",
+			Args:    []string{"env"},
 		}
 		got, _ := CommandWithResult(commander)
 
@@ -21,7 +21,7 @@ func TestCommandWithResultReturnsAStringValue(t *testing.T) {
 
 	t.Run("run with with error returned", func(t *testing.T) {
 		commander := RealCommander{
-			command: "hh",
+			Command: "hh",
 		}
 		_, err := CommandWithResult(commander)
 
@@ -30,23 +30,3 @@ func TestCommandWithResultReturnsAStringValue(t *testing.T) {
 		}
 	})
 }
-
-/*func TestCommandWithoutResult(t *testing.T) {
-
-	commander := RealCommander{}
-	t.Run("run with no errors", func(t *testing.T) {
-		err := CommandWithoutResult(commander, "go", "env")
-
-		if err != nil {
-			t.Errorf("didn't want an error but got one '%s'", err)
-		}
-	})
-
-	t.Run("run with with error returned", func(t *testing.T) {
-		err := CommandWithoutResult(commander, "hh")
-
-		if err == nil {
-			t.Errorf("wanted an error but didn't get one")
-		}
-	})
-}*/

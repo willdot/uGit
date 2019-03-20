@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// checkoutCmd represents the say command
+// checkoutCmd represents the checkout a branch command
 var checkoutCmd = &cobra.Command{
 	Use:   "checkout",
 	Short: "Checkout a branch",
@@ -21,20 +21,18 @@ var checkoutCmd = &cobra.Command{
 			Command: "git",
 			Args:    []string{"branch"},
 		}
-		result, err := git.GetBranches(branchCommander)
+		branches, err := git.GetBranches(branchCommander)
 
 		if err != nil {
 			fmt.Printf("Prompt failed %v\n", err)
 			return
 		}
 
-		branches := git.SplitBranches(result)
-
-		branches = git.RemoveCurrentBranch(branches)
+		branchesSlice := git.SplitBranches(branches, true)
 
 		prompt := promptui.Select{
 			Label:    "Select branch",
-			Items:    branches,
+			Items:    branchesSlice,
 			HideHelp: true,
 		}
 
@@ -45,21 +43,25 @@ var checkoutCmd = &cobra.Command{
 			return
 		}
 
-		checkoutCommander := run.Commander{
-			Command: "git",
-			Args:    []string{"checkout"},
-		}
-
-		x, err := git.CheckoutBranch(checkoutCommander, strings.Replace(selection, " ", "", -1))
-
-		if err != nil {
-			fmt.Printf("error: %v", errors.WithMessage(err, ""))
-		}
-
-		fmt.Println(x)
+		checkout(selection)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(checkoutCmd)
+}
+
+func checkout(branchSelection string) {
+	checkoutCommander := run.Commander{
+		Command: "git",
+		Args:    []string{"checkout"},
+	}
+
+	result, err := git.CheckoutBranch(checkoutCommander, strings.Replace(branchSelection, " ", "", -1))
+
+	if err != nil {
+		fmt.Printf("error: %v", errors.WithMessage(err, ""))
+	}
+
+	fmt.Println(result)
 }

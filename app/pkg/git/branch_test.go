@@ -22,13 +22,25 @@ func (f *FakeCommander) RunCommand() ([]byte, error) {
 }
 
 func TestSplitBranch(t *testing.T) {
-	want := []string{"Dev", "Master"}
+	t.Run("Split and keep current", func(t *testing.T) {
+		want := []string{"* Current", "Dev", "Master"}
 
-	got := SplitBranches("Dev\nMaster")
+		got := SplitBranches("* Current\nDev\nMaster", false)
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got %v want %v", got, want)
-	}
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %v want %v", got, want)
+		}
+	})
+
+	t.Run("Split and remove current", func(t *testing.T) {
+		want := []string{"Dev", "Master"}
+
+		got := SplitBranches("* Current\n\nDev\nMaster", true)
+
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %v want %v", got, want)
+		}
+	})
 }
 
 func TestRemoveCurrentBranch(t *testing.T) {

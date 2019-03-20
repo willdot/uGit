@@ -15,8 +15,12 @@ var ErrNoCurrentBranchFound = errors.New("no current branch found")
 var ErrBranchDoesNotExist = errors.New("Cannot checkout branch as it doesn't exist")
 
 // SplitBranches takes a string of branches with newline separators and splits them into a slice
-func SplitBranches(s string) []string {
+func SplitBranches(s string, removeCurrent bool) []string {
+
 	result := strings.Split(s, "\n")
+	if removeCurrent {
+		result = RemoveCurrentBranch(result)
+	}
 
 	return result
 }
@@ -50,7 +54,7 @@ func RemoveCurrentBranch(branches []string) []string {
 	current, _ := GetCurrentBranch(branches)
 
 	for i := 0; i < len(branches); i++ {
-		if branches[i] != current {
+		if branches[i] != current && branches[i] != "" {
 			result = append(result, branches[i])
 		}
 	}

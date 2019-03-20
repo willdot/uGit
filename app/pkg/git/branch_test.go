@@ -12,7 +12,7 @@ type FakeCommander struct {
 	Err    error
 }
 
-func (f *FakeCommander) CombinedOutput() ([]byte, error) {
+func (f *FakeCommander) RunCommand() ([]byte, error) {
 
 	if f.Err != nil {
 		return nil, f.Err

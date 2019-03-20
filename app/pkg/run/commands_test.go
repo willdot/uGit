@@ -8,7 +8,7 @@ func TestCommandWithResultReturnsAStringValue(t *testing.T) {
 
 	t.Run("run and returns a string", func(t *testing.T) {
 		dontWant := ""
-		commander := RealCommander{
+		commander := Commander{
 			Command: "go",
 			Args:    []string{"env"},
 		}
@@ -20,7 +20,7 @@ func TestCommandWithResultReturnsAStringValue(t *testing.T) {
 	})
 
 	t.Run("run with with error returned", func(t *testing.T) {
-		commander := RealCommander{
+		commander := Commander{
 			Command: "hh",
 		}
 		_, err := CommandWithResult(commander)

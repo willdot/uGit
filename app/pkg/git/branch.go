@@ -37,7 +37,7 @@ func GetCurrentBranch(branches []string) (string, error) {
 }
 
 // GetBranches gets all local branches
-func GetBranches(commander run.Commander) (string, error) {
+func GetBranches(commander run.ICommander) (string, error) {
 	result, err := run.CommandWithResult(commander)
 
 	return result, err
@@ -59,7 +59,7 @@ func RemoveCurrentBranch(branches []string) []string {
 }
 
 // CheckoutBranch checks out a branch
-func CheckoutBranch(commander run.Commander, branch string) (string, error) {
+func CheckoutBranch(commander run.ICommander, branch string) (string, error) {
 
 	result, err := run.CommandWithResult(commander)
 

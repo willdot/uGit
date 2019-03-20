@@ -17,7 +17,7 @@ var checkoutCmd = &cobra.Command{
 	Short: "Checkout a branch",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		branchCommander := run.RealCommander{
+		branchCommander := run.Commander{
 			Command: "git",
 			Args:    []string{"branch"},
 		}
@@ -45,7 +45,7 @@ var checkoutCmd = &cobra.Command{
 			return
 		}
 
-		checkoutCommander := run.RealCommander{
+		checkoutCommander := run.Commander{
 			Command: "git",
 			Args:    []string{"checkout"},
 		}

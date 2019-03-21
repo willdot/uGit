@@ -19,7 +19,7 @@ var checkoutCmd = &cobra.Command{
 
 		branchCommander := run.Commander{
 			Command: "git",
-			Args:    []string{"branch"},
+			Args:    []string{"branch", "-a"},
 		}
 		branches, err := git.GetBranches(branchCommander)
 

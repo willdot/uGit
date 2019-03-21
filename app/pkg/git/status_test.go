@@ -20,11 +20,35 @@ func TestStatus(t *testing.T) {
 	}
 }
 
-func TestGetUntrackedFiles(t *testing.T) {
-
+func TestGetTrackedFiles(t *testing.T) {
 	want := []string{"something/something.go", "something/else.go", "Some folder/"}
 
-	input := `On branch feature/commit
+	t.Run("Untracked only", func(t *testing.T) {
+		got := GetFiles(untracked)
+
+		assertSlice(t, got, want)
+	})
+
+	t.Run("Tracked and untracked", func(t *testing.T) {
+		got := GetFiles(trackedAndUntracked)
+
+		assertSlice(t, got, want)
+	})
+
+	t.Run("No untracked files", func(t *testing.T) {
+		got := GetFiles(nothingToCommit)
+
+		assertSlice(t, got, nil)
+	})
+}
+
+func assertSlice(t *testing.T, got, want []string) {
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %v want %v", got, want)
+	}
+}
+
+var untracked = `On branch feature/commit
 Untracked files:
 (use "git add <file>..." to include in what will be committed)
 
@@ -34,33 +58,7 @@ Some folder/
 
 nothing added to commit but untracked files present (use "git add" to track)`
 
-	got := GetFiles(input)
-
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got %v want %v", got, want)
-	}
-}
-
-func TestGetUntrackedFilesNoUntrackedFiles(t *testing.T) {
-
-	input := `On branch feature/commit
-Your branch is ahead of 'origin/feature/commit' by 1 commit.
-(use "git push" to publish your local commits)
-
-nothing to commit, working tree clean`
-
-	got := GetFiles(input)
-
-	if got != nil {
-		t.Errorf("got %v want %v", got, nil)
-	}
-}
-
-func TestGetTrackedAndUntrackedFiles(t *testing.T) {
-
-	want := []string{"something/something.go", "something/else.go", "Some folder/"}
-
-	input := `On branch feature/commit
+var trackedAndUntracked = `On branch feature/commit
 Your branch is ahead of 'origin/feature/commit' by 1 commit.
 (use "git push" to publish your local commits)
 
@@ -80,9 +78,8 @@ Some folder/
 
 no changes added to commit (use "git add" and/or "git commit -a")`
 
-	got := GetFiles(input)
+var nothingToCommit = `On branch feature/commit
+Your branch is ahead of 'origin/feature/commit' by 1 commit.
+(use "git push" to publish your local commits)
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got %v want %v", got, want)
-	}
-}
+nothing to commit, working tree clean`

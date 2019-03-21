@@ -86,6 +86,8 @@ func init() {
 }
 
 func checkout(branchSelection string) {
+
+	git.RemoveRemoteOriginFromName(&branchSelection)
 	checkoutCommander := run.Commander{
 		Command: "git",
 		Args:    []string{"checkout", strings.Replace(branchSelection, " ", "", -1)},

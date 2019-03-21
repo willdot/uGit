@@ -69,3 +69,12 @@ func CheckoutBranch(commander run.ICommander) (string, error) {
 
 	return string(result), err
 }
+
+// RemoveRemoteOriginFromName removes the remotes/origin part of the branch
+func RemoveRemoteOriginFromName(branch *string) {
+
+	if strings.Contains((*branch), "remotes/origin/") {
+		x := strings.Split(*branch, "remotes/origin/")
+		*branch = x[1]
+	}
+}

@@ -30,10 +30,42 @@ var checkoutCmd = &cobra.Command{
 
 		branchesSlice := git.SplitBranches(branches, true)
 
+		help := promptui.Styler(promptui.FGRed)("Use arrow keys (or J K) to go up and down.")
+		searchHelp := promptui.Styler(promptui.FGYellow)("Use ? to toggle search.")
+		fmt.Println(help)
+		fmt.Println(searchHelp)
+
+		searcher := func(input string, index int) bool {
+			b := branchesSlice[index]
+			branchName := strings.Replace(strings.ToLower(b), " ", "", -1)
+			input = strings.Replace(strings.ToLower(input), " ", "", -1)
+
+			return strings.Contains(branchName, input)
+		}
+
+		searchKey := promptui.Key{
+			Code:    63,
+			Display: "?",
+		}
+
+		selectKeys := &promptui.SelectKeys{
+			Search: searchKey,
+		}
+
+		iconSelect := promptui.Styler(promptui.FGBlue)("*")
+		templates := &promptui.SelectTemplates{
+			Label:    "{{ . }}",
+			Active:   iconSelect + "{{. | blue }}",
+			Inactive: "  {{ . }}",
+		}
+
 		prompt := promptui.Select{
-			Label:    "Select branch",
-			Items:    branchesSlice,
-			HideHelp: true,
+			Label:     "Select branch",
+			Items:     branchesSlice,
+			HideHelp:  true,
+			Searcher:  searcher,
+			Keys:      selectKeys,
+			Templates: templates,
 		}
 
 		_, selection, err := prompt.Run()

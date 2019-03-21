@@ -1,6 +1,7 @@
 package root
 
 import (
+	"errors"
 	"fmt"
 	"sync"
 	"uGit/app/pkg/git"
@@ -64,19 +65,38 @@ var commitCmd = &cobra.Command{
 			}
 		}
 
-		commitCommander := run.Commander{
-			Command: "git",
-			Args:    []string{"commit", "-am", "test commit"},
+		validate := func(input string) error {
+			if input == "" {
+				return errors.New("commit message can't be blank")
+			}
+			return nil
 		}
 
-		result, err := git.CommitChanges(commitCommander)
+		prompt := promptui.Prompt{
+			Label:    "Number",
+			Validate: validate,
+		}
+
+		result, err := prompt.Run()
 
 		if err != nil {
 			fmt.Printf("Prompt failed %v\n", err)
 			return
 		}
 
-		fmt.Println(result)
+		commitCommander := run.Commander{
+			Command: "git",
+			Args:    []string{"commit", "-am", result},
+		}
+
+		commitResult, err := git.CommitChanges(commitCommander)
+
+		if err != nil {
+			fmt.Printf("Prompt failed %v\n", err)
+			return
+		}
+
+		fmt.Println(commitResult)
 	},
 }
 

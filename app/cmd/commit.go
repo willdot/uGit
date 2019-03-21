@@ -73,7 +73,7 @@ var commitCmd = &cobra.Command{
 		}
 
 		prompt := promptui.Prompt{
-			Label:    "Number",
+			Label:    "Commit message",
 			Validate: validate,
 		}
 

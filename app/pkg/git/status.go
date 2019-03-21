@@ -12,8 +12,8 @@ func Status(commander run.ICommander) (string, error) {
 	return string(result), err
 }
 
-// GetFiles will return a slice of files that aren't tracked
-func GetFiles(s string) []string {
+// GetFiles will return a slice of files that aren't tracked and if there is nothing to commit, a true flag
+func GetFiles(s string) ([]string, bool) {
 
 	x := strings.Split(s, "\n")
 
@@ -29,11 +29,11 @@ func GetFiles(s string) []string {
 		}
 
 		if line == "nothing to commit, working tree clean" {
-			return nil
+			return nil, true
 		}
 	}
 
-	return result
+	return result, false
 }
 
 func getUntracked(s []string) []string {

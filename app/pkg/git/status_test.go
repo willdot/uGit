@@ -24,27 +24,43 @@ func TestGetTrackedFiles(t *testing.T) {
 	want := []string{"something/something.go", "something/else.go", "Some folder/"}
 
 	t.Run("Untracked only", func(t *testing.T) {
-		got := GetFiles(untracked)
+		got, noCommit := GetFiles(untracked)
 
 		assertSlice(t, got, want)
+		assertBool(t, noCommit, false)
 	})
 
 	t.Run("Tracked and untracked", func(t *testing.T) {
-		got := GetFiles(trackedAndUntracked)
+		got, noCommit := GetFiles(trackedAndUntracked)
 
 		assertSlice(t, got, want)
+		assertBool(t, noCommit, false)
 	})
 
-	t.Run("No untracked files", func(t *testing.T) {
-		got := GetFiles(nothingToCommit)
+	t.Run("Nothing to commit", func(t *testing.T) {
+		got, noCommit := GetFiles(nothingToCommit)
 
 		assertSlice(t, got, nil)
+		assertBool(t, noCommit, true)
+	})
+
+	t.Run("No untracked files, but changes", func(t *testing.T) {
+		got, noCommit := GetFiles(noUntrackedButChanges)
+
+		assertSlice(t, got, nil)
+		assertBool(t, noCommit, false)
 	})
 }
 
 func assertSlice(t *testing.T, got, want []string) {
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %v want %v", got, want)
+	}
+}
+
+func assertBool(t *testing.T, got, want bool) {
+	if got != want {
+		t.Errorf("got %v but wanted %v", got, want)
 	}
 }
 
@@ -83,3 +99,14 @@ Your branch is ahead of 'origin/feature/commit' by 1 commit.
 (use "git push" to publish your local commits)
 
 nothing to commit, working tree clean`
+
+var noUntrackedButChanges = `On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+new file:   New folder/New Text Document - Copy.txt
+new file:   New folder/New Text Document.txt
+new file:   a.txt
+new file:   b.txt
+
+`

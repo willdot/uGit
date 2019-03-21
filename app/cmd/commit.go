@@ -23,10 +23,15 @@ var commitCmd = &cobra.Command{
 
 		x, err := git.Status(untrackedFilesCommander)
 
-		untrackedFiles := git.GetFiles(x)
+		untrackedFiles, nothingToCommit := git.GetFiles(x)
 
 		if err != nil {
 			fmt.Printf("Prompt failed %v\n", err)
+			return
+		}
+
+		if nothingToCommit {
+			fmt.Println("Nothing to commit")
 			return
 		}
 

@@ -15,8 +15,6 @@ func Status(commander run.ICommander) (string, error) {
 // GetFiles will return a slice of files that aren't tracked
 func GetFiles(s string) []string {
 
-	var untracked bool
-
 	x := strings.Split(s, "\n")
 
 	var result []string
@@ -25,16 +23,14 @@ func GetFiles(s string) []string {
 		line := strings.TrimSpace(x[i])
 
 		if line == "Untracked files:" {
-			untracked = true
+			x = x[i:]
+			result = getUntracked(x)
 			break
 		}
 
 		if line == "nothing to commit, working tree clean" {
 			return nil
 		}
-	}
-	if untracked {
-		result = getUntracked(x)
 	}
 
 	return result

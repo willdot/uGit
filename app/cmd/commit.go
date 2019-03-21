@@ -5,6 +5,7 @@ import (
 	"uGit/app/pkg/git"
 	"uGit/app/pkg/run"
 
+	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
@@ -27,11 +28,13 @@ var commitCmd = &cobra.Command{
 			return
 		}
 
+		var selectedFiles []string
 		if len(untrackedFiles) > 0 {
 			//Get user to select files to commit
-
-			return
+			selectedFiles = selectFilesToTrack(untrackedFiles)
 		}
+
+		fmt.Println(selectedFiles)
 
 		commitCommander := run.Commander{
 			Command: "git",
@@ -47,6 +50,39 @@ var commitCmd = &cobra.Command{
 
 		fmt.Println(result)
 	},
+}
+
+func selectFilesToTrack(availableFiles []string) []string {
+	var result string
+	var err error
+	var exit = false
+
+	prompt := promptui.SelectWithAdd{
+		Label: "What's your text editor",
+		Items: availableFiles,
+	}
+
+	for !exit {
+		index := -1
+		for index < 0 {
+
+			index, result, err = prompt.Run()
+			fmt.Println(index)
+
+			availableFiles = append(availableFiles[:index], availableFiles[index+1:]...)
+
+			if result == "Exit" {
+				exit = true
+			}
+		}
+	}
+
+	if err != nil {
+		fmt.Printf("Prompt failed %v\n", err)
+		return nil
+	}
+
+	return availableFiles
 }
 
 func init() {

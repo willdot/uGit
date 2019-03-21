@@ -63,7 +63,7 @@ func RemoveCurrentBranch(branches []string) []string {
 }
 
 // CheckoutBranch checks out a branch
-func CheckoutBranch(commander run.ICommander, branch string) (string, error) {
+func CheckoutBranch(commander run.ICommander) (string, error) {
 
 	result, err := run.CommandWithResult(commander)
 

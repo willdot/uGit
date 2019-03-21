@@ -105,7 +105,7 @@ func TestCheckout(t *testing.T) {
 			Result: []byte(want),
 		}
 
-		got, _ := CheckoutBranch(fake, "fake")
+		got, _ := CheckoutBranch(fake)
 
 		if !strings.Contains(got, want) {
 			t.Errorf("wanted '%s' but got '%s'", want, got)
@@ -119,7 +119,7 @@ func TestCheckout(t *testing.T) {
 			Err: ErrBranchDoesNotExist,
 		}
 
-		_, got := CheckoutBranch(fake, "fake")
+		_, got := CheckoutBranch(fake)
 
 		if got != want {
 			t.Errorf("wanted '%s' but got '%s'", want, got)

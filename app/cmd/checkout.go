@@ -38,6 +38,8 @@ var checkoutCmd = &cobra.Command{
 
 		_, selection, err := prompt.Run()
 
+		fmt.Println(selection)
+
 		if err != nil {
 			fmt.Printf("Prompt failed %v\n", err)
 			return
@@ -54,10 +56,10 @@ func init() {
 func checkout(branchSelection string) {
 	checkoutCommander := run.Commander{
 		Command: "git",
-		Args:    []string{"checkout"},
+		Args:    []string{"checkout", strings.Replace(branchSelection, " ", "", -1)},
 	}
 
-	result, err := git.CheckoutBranch(checkoutCommander, strings.Replace(branchSelection, " ", "", -1))
+	result, err := git.CheckoutBranch(checkoutCommander)
 
 	if err != nil {
 		fmt.Printf("error: %v", errors.WithMessage(err, ""))

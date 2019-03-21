@@ -2,6 +2,7 @@ package root
 
 import (
 	"fmt"
+	"sync"
 	"uGit/app/pkg/git"
 	"uGit/app/pkg/run"
 
@@ -29,10 +30,23 @@ var commitCmd = &cobra.Command{
 		}
 
 		if len(untrackedFiles) > 0 {
-			fmt.Println("You have untracked files. Please select any files you wish to add")
-			//Get user to select files to commit
-			selectedFiles := selectFilesToTrack(untrackedFiles)
+			var selectedFiles []string
+
+			var waitGroup sync.WaitGroup
+
+			waitGroup.Add(1)
+			go func() {
+				defer waitGroup.Done()
+				fmt.Println("You have untracked files. Please select any files you wish to add")
+				//Get user to select files to commit
+				selectedFiles = selectFilesToTrack(untrackedFiles)
+
+			}()
+
+			waitGroup.Wait()
+			fmt.Println("You selected")
 			fmt.Println(selectedFiles)
+
 		}
 
 		/*commitCommander := run.Commander{
@@ -53,7 +67,7 @@ var commitCmd = &cobra.Command{
 
 func selectFilesToTrack(availableFiles []string) []string {
 
-	availableFiles = append([]string{"**Select all**", "**Exit**", "**Exit and ignore selections**"}, availableFiles...)
+	options := append([]string{"**Select all**", "**Exit**", "**Exit and ignore selections**"}, availableFiles...)
 	var result string
 	var err error
 	var exit = false
@@ -63,7 +77,7 @@ func selectFilesToTrack(availableFiles []string) []string {
 	for !exit {
 		prompt := promptui.Select{
 			Label: "What's your text editor",
-			Items: availableFiles,
+			Items: options,
 		}
 		index := -1
 		for index < 0 {
@@ -77,11 +91,14 @@ func selectFilesToTrack(availableFiles []string) []string {
 				exit = true
 				selectedFiles = nil
 			case "**Select all**":
-				selectedFiles = addAllFiles(availableFiles)
-				availableFiles = append(availableFiles[:3])
+				// If all files have already been selected by user,do nothing
+				if len(options) > 3 {
+					selectedFiles = availableFiles
+					options = append(options[:3])
+				}
 			default:
-				availableFiles = append(availableFiles[:index], availableFiles[index+1:]...)
 				selectedFiles = append(selectedFiles, result)
+				options = append(options[:index], options[index+1:]...)
 			}
 		}
 	}
@@ -97,7 +114,7 @@ func selectFilesToTrack(availableFiles []string) []string {
 func addAllFiles(s []string) []string {
 
 	var result []string
-	for i := 3; i < len(s); i++ {
+	for i := 0; i < len(s); i++ {
 		file := s[i]
 		result = append(result, file)
 	}

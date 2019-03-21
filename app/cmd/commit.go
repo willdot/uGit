@@ -47,9 +47,24 @@ var commitCmd = &cobra.Command{
 			fmt.Println("You selected")
 			fmt.Println(selectedFiles)
 
+			if len(selectedFiles) > 0 {
+				addFilesCommander := run.Commander{
+					Command: "git",
+					Args:    append([]string{"add"}, selectedFiles...),
+				}
+
+				x, err := git.Add(addFilesCommander)
+
+				if err != nil {
+					fmt.Printf("Prompt failed %v\n", err)
+					return
+				}
+
+				fmt.Println(x)
+			}
 		}
 
-		/*commitCommander := run.Commander{
+		commitCommander := run.Commander{
 			Command: "git",
 			Args:    []string{"commit", "-am", "test commit"},
 		}
@@ -61,7 +76,7 @@ var commitCmd = &cobra.Command{
 			return
 		}
 
-		fmt.Println(result)*/
+		fmt.Println(result)
 	},
 }
 

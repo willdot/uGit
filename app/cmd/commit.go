@@ -30,13 +30,14 @@ var commitCmd = &cobra.Command{
 
 		var selectedFiles []string
 		if len(untrackedFiles) > 0 {
+			fmt.Println("You have untracked files. Please select any files you wish to add")
 			//Get user to select files to commit
 			selectedFiles = selectFilesToTrack(untrackedFiles)
 		}
 
 		fmt.Println(selectedFiles)
 
-		commitCommander := run.Commander{
+		/*commitCommander := run.Commander{
 			Command: "git",
 			Args:    []string{"commit", "-am", "test commit"},
 		}
@@ -48,31 +49,34 @@ var commitCmd = &cobra.Command{
 			return
 		}
 
-		fmt.Println(result)
+		fmt.Println(result)*/
 	},
 }
 
 func selectFilesToTrack(availableFiles []string) []string {
+
+	availableFiles = append(availableFiles, "Exit")
 	var result string
 	var err error
 	var exit = false
 
-	prompt := promptui.SelectWithAdd{
-		Label: "What's your text editor",
-		Items: availableFiles,
-	}
+	var selectedFiles []string
 
 	for !exit {
+		prompt := promptui.Select{
+			Label: "What's your text editor",
+			Items: availableFiles,
+		}
 		index := -1
 		for index < 0 {
 
 			index, result, err = prompt.Run()
-			fmt.Println(index)
-
-			availableFiles = append(availableFiles[:index], availableFiles[index+1:]...)
 
 			if result == "Exit" {
 				exit = true
+			} else {
+				availableFiles = append(availableFiles[:index], availableFiles[index+1:]...)
+				selectedFiles = append(selectedFiles, result)
 			}
 		}
 	}
@@ -82,7 +86,7 @@ func selectFilesToTrack(availableFiles []string) []string {
 		return nil
 	}
 
-	return availableFiles
+	return selectedFiles
 }
 
 func init() {

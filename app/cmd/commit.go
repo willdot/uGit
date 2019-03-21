@@ -53,8 +53,7 @@ var commitCmd = &cobra.Command{
 
 func selectFilesToTrack(availableFiles []string) []string {
 
-	availableFiles = append(availableFiles, "**Exit**")
-	availableFiles = append(availableFiles, "**Exit and ignore selections**")
+	availableFiles = append([]string{"**Select all**", "**Exit**", "**Exit and ignore selections**"}, availableFiles...)
 	var result string
 	var err error
 	var exit = false
@@ -71,12 +70,16 @@ func selectFilesToTrack(availableFiles []string) []string {
 
 			index, result, err = prompt.Run()
 
-			if result == "**Exit**" {
+			switch result {
+			case "**Exit**":
 				exit = true
-			} else if result == "**Exit and ignore selections**" {
+			case "**Exit and ignore selections**":
 				exit = true
 				selectedFiles = nil
-			} else {
+			case "**Select all**":
+				selectedFiles = addAllFiles(availableFiles)
+				availableFiles = append(availableFiles[:3])
+			default:
 				availableFiles = append(availableFiles[:index], availableFiles[index+1:]...)
 				selectedFiles = append(selectedFiles, result)
 			}
@@ -89,6 +92,16 @@ func selectFilesToTrack(availableFiles []string) []string {
 	}
 
 	return selectedFiles
+}
+
+func addAllFiles(s []string) []string {
+
+	var result []string
+	for i := 3; i < len(s); i++ {
+		file := s[i]
+		result = append(result, file)
+	}
+	return result
 }
 
 func init() {

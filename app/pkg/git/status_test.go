@@ -64,6 +64,32 @@ func assertBool(t *testing.T, got, want bool) {
 	}
 }
 
+func BenchmarkGetTrackedFiles(b *testing.B) {
+	b.Run("Untracked only", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			GetFiles(untracked)
+		}
+	})
+
+	b.Run("Tracked and untracked", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			GetFiles(trackedAndUntracked)
+		}
+	})
+
+	b.Run("Nothing to commit", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			GetFiles(nothingToCommit)
+		}
+	})
+
+	b.Run("No untracked files, but changes", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			GetFiles(noUntrackedButChanges)
+		}
+	})
+}
+
 var untracked = `On branch feature/commit
 Untracked files:
 (use "git add <file>..." to include in what will be committed)

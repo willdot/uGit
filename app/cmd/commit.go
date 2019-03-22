@@ -20,9 +20,9 @@ var commitCmd = &cobra.Command{
 			Args:    []string{"status"},
 		}
 
-		x, err := git.Status(untrackedFilesCommander)
+		status, err := git.Status(untrackedFilesCommander)
 
-		untrackedFiles, nothingToCommit := git.GetFiles(x)
+		untrackedFiles, nothingToCommit := git.GetFiles(status)
 
 		if err != nil {
 			fmt.Printf("error: %v", errors.WithMessage(err, ""))
@@ -35,72 +35,36 @@ var commitCmd = &cobra.Command{
 		}
 
 		if len(untrackedFiles) > 0 {
-			var selectedFiles []string
-
-			selectedFiles = selectFilesToTrack(untrackedFiles)
-
-			if len(selectedFiles) > 0 {
-
-				printSelectedFiles(selectedFiles)
-
-				addFilesCommander := run.Commander{
-					Command: "git",
-					Args:    append([]string{"add"}, selectedFiles...),
-				}
-
-				x, err := git.Add(addFilesCommander)
-
-				if err != nil {
-					fmt.Printf("Prompt failed %v\n", err)
-					return
-				}
-
-				fmt.Println(x)
-			}
+			resolveUntrackedFiles(untrackedFiles)
 		}
 
-		commitMessage := ""
-
-		commitQ := getCommitQuestion()
-		err = survey.Ask(commitQ, &commitMessage)
-
-		if commitMessage == "exit" {
-			return
-		}
-
-		if err != nil {
-			fmt.Printf("error: %v", errors.WithMessage(err, ""))
-			return
-		}
-
-		commitCommander := run.Commander{
-			Command: "git",
-			Args:    []string{"commit", "-am", commitMessage},
-		}
-
-		commitResult, err := git.CommitChanges(commitCommander)
-
-		if err != nil {
-			fmt.Printf("error: %v", errors.WithMessage(err, ""))
-			return
-		}
-
-		fmt.Println(commitResult)
+		commit()
 	},
 }
 
-func getCommitQuestion() []*survey.Question {
-	var commitMessage = []*survey.Question{
-		{
-			Name: "commit",
-			Prompt: &survey.Input{
-				Message: `Enter a commit message or type "exit" to cancel`,
-			},
-			Validate: survey.Required,
-		},
-	}
+func resolveUntrackedFiles(untrackedFiles []string) {
+	var selectedFiles []string
 
-	return commitMessage
+	selectedFiles = selectFilesToTrack(untrackedFiles)
+
+	if len(selectedFiles) > 0 {
+
+		printSelectedFiles(selectedFiles)
+
+		addFilesCommander := run.Commander{
+			Command: "git",
+			Args:    append([]string{"add"}, selectedFiles...),
+		}
+
+		result, err := git.Add(addFilesCommander)
+
+		if err != nil {
+			fmt.Printf("Prompt failed %v\n", err)
+			return
+		}
+
+		fmt.Println(result)
+	}
 }
 
 func selectFilesToTrack(availableFiles []string) []string {
@@ -127,22 +91,56 @@ func selectFilesToTrack(availableFiles []string) []string {
 	return result
 }
 
-func addAllFiles(s []string) []string {
-
-	var result []string
-	for i := 0; i < len(s); i++ {
-		file := s[i]
-		result = append(result, file)
-	}
-	return result
-}
-
 func printSelectedFiles(files []string) {
 	fmt.Println("You selected:")
 
 	for _, file := range files {
 		fmt.Println(file)
 	}
+}
+
+func commit() {
+	commitMessage := ""
+
+	commitQ := getCommitQuestion()
+	err := survey.Ask(commitQ, &commitMessage)
+
+	if commitMessage == "exit" {
+		return
+	}
+
+	if err != nil {
+		fmt.Printf("error: %v", errors.WithMessage(err, ""))
+		return
+	}
+
+	commitCommander := run.Commander{
+		Command: "git",
+		Args:    []string{"commit", "-am", commitMessage},
+	}
+
+	commitResult, err := git.CommitChanges(commitCommander)
+
+	if err != nil {
+		fmt.Printf("error: %v", errors.WithMessage(err, ""))
+		return
+	}
+
+	fmt.Println(commitResult)
+}
+
+func getCommitQuestion() []*survey.Question {
+	var commitQuestion = []*survey.Question{
+		{
+			Name: "commit",
+			Prompt: &survey.Input{
+				Message: `Enter a commit message or type "exit" to cancel`,
+			},
+			Validate: survey.Required,
+		},
+	}
+
+	return commitQuestion
 }
 
 func init() {

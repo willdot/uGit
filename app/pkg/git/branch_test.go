@@ -45,7 +45,7 @@ func TestSplitBranch(t *testing.T) {
 
 func TestRemoveCurrentBranch(t *testing.T) {
 	want := []string{"dev", "master"}
-	input := []string{"* current", "dev", "master"}
+	input := []string{"* current", "dev", "master", "remotes/origin/current"}
 	got := RemoveCurrentBranch(input)
 
 	if !reflect.DeepEqual(got, want) {

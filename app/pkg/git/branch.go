@@ -52,9 +52,12 @@ func RemoveCurrentBranch(branches []string) []string {
 
 	var result []string
 	current, _ := GetCurrentBranch(branches)
+	//current = strings.Trim(current, "* ")
 
 	for i := 0; i < len(branches); i++ {
-		if branches[i] != current && branches[i] != "" {
+		branch := branches[i]
+		RemoveRemoteOriginFromName(&branch)
+		if branch != current && branch != "" && branch != strings.Trim(current, "* ") {
 			result = append(result, branches[i])
 		}
 	}

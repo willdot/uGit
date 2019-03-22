@@ -8,8 +8,9 @@ import (
 
 // FakeCommander is used for mocking
 type FakeCommander struct {
-	Result []byte
-	Err    error
+	Result       []byte
+	ResultString []string
+	Err          error
 }
 
 func (f *FakeCommander) RunCommand() ([]byte, error) {
@@ -82,15 +83,15 @@ func TestGetCurrentBranch(t *testing.T) {
 
 func TestGetBranches(t *testing.T) {
 	t.Run("get local branches", func(t *testing.T) {
-		want := ""
+		want := []string{}
 
 		fake := &FakeCommander{
-			Result: []byte(want),
+			ResultString: []string(want),
 		}
 
 		got, _ := GetBranches(fake)
 
-		if got != want {
+		if len(got) != len(want) {
 			t.Errorf("want '%s' but got '%s'", got, want)
 		}
 	})

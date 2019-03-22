@@ -19,7 +19,7 @@ var checkoutCmd = &cobra.Command{
 
 		branchCommander := run.Commander{
 			Command: "git",
-			Args:    []string{"branch"},
+			Args:    []string{"branch", "-a"},
 		}
 		branches, err := git.GetBranches(branchCommander)
 
@@ -86,6 +86,8 @@ func init() {
 }
 
 func checkout(branchSelection string) {
+
+	git.RemoveRemoteOriginFromName(&branchSelection)
 	checkoutCommander := run.Commander{
 		Command: "git",
 		Args:    []string{"checkout", strings.Replace(branchSelection, " ", "", -1)},

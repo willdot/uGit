@@ -45,7 +45,7 @@ func TestSplitBranch(t *testing.T) {
 
 func TestRemoveCurrentBranch(t *testing.T) {
 	want := []string{"dev", "master"}
-	input := []string{"* current", "dev", "master"}
+	input := []string{"* current", "dev", "master", "remotes/origin/current"}
 	got := RemoveCurrentBranch(input)
 
 	if !reflect.DeepEqual(got, want) {
@@ -124,5 +124,33 @@ func TestCheckout(t *testing.T) {
 		if got != want {
 			t.Errorf("wanted '%s' but got '%s'", want, got)
 		}
+	})
+}
+
+func TestRemoveRemoteOriginFromName(t *testing.T) {
+	t.Run("Has remotes origin", func(t *testing.T) {
+		input := "remotes/origin/master"
+
+		want := "master"
+
+		RemoveRemoteOriginFromName(&input)
+
+		if input != want {
+			t.Errorf("want %s but got %s", want, input)
+		}
+
+	})
+
+	t.Run("No remotes origin", func(t *testing.T) {
+		input := "bug/origins"
+
+		want := "bug/origins"
+
+		RemoveRemoteOriginFromName(&input)
+
+		if input != want {
+			t.Errorf("want %s but got %s", want, input)
+		}
+
 	})
 }

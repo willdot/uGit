@@ -5,6 +5,7 @@ import (
 	"uGit/app/pkg/git"
 	"uGit/app/pkg/run"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	survey "gopkg.in/AlecAivazis/survey.v1"
 )
@@ -24,7 +25,7 @@ var commitCmd = &cobra.Command{
 		untrackedFiles, nothingToCommit := git.GetFiles(x)
 
 		if err != nil {
-			fmt.Printf("Prompt failed %v\n", err)
+			fmt.Printf("error: %v", errors.WithMessage(err, ""))
 			return
 		}
 
@@ -63,7 +64,7 @@ var commitCmd = &cobra.Command{
 		err = survey.Ask(commitQ, &commitMessage)
 
 		if err != nil {
-			fmt.Printf("Prompt failed %v\n", err)
+			fmt.Printf("error: %v", errors.WithMessage(err, ""))
 			return
 		}
 
@@ -75,7 +76,7 @@ var commitCmd = &cobra.Command{
 		commitResult, err := git.CommitChanges(commitCommander)
 
 		if err != nil {
-			fmt.Printf("Prompt failed %v\n", err)
+			fmt.Printf("error: %v", errors.WithMessage(err, ""))
 			return
 		}
 

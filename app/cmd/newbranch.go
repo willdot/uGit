@@ -1,10 +1,10 @@
 package root
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	survey "gopkg.in/AlecAivazis/survey.v1"
 )
@@ -21,7 +21,7 @@ var checkoutNewCmd = &cobra.Command{
 		err := survey.Ask(question, &selection)
 
 		if err != nil {
-			fmt.Printf("Prompt failed %v\n", err)
+			fmt.Printf("error: %v", errors.WithMessage(err, ""))
 			return
 		}
 

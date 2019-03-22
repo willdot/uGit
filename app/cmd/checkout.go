@@ -25,7 +25,7 @@ var checkoutCmd = &cobra.Command{
 		branches, err := git.GetBranches(branchCommander)
 
 		if err != nil {
-			fmt.Printf("Prompt failed %v\n", err)
+			fmt.Printf("error: %v", errors.WithMessage(err, ""))
 			return
 		}
 
@@ -33,6 +33,11 @@ var checkoutCmd = &cobra.Command{
 
 		question := getQuestion(branches)
 		err = survey.Ask(question, &selection)
+
+		if err != nil {
+			fmt.Printf("error: %v", errors.WithMessage(err, ""))
+			return
+		}
 
 		checkout(selection, false)
 	},

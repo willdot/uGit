@@ -55,8 +55,7 @@ func getQuestion(branches []string) []*survey.Question {
 				Message: "Select a branch",
 				Options: branches,
 			},
-			Validate:  survey.Required,
-			Transform: survey.Title,
+			Validate: survey.Required,
 		},
 	}
 

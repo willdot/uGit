@@ -11,7 +11,7 @@ import (
 
 // checkoutNewCmd represents the checkout of a new branch command
 var checkoutNewCmd = &cobra.Command{
-	Use:   "checkout new",
+	Use:   "checkout-new",
 	Short: "Checkout a new branch",
 	Run: func(cmd *cobra.Command, args []string) {
 
@@ -30,15 +30,15 @@ var checkoutNewCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(checkoutCmd)
+	rootCmd.AddCommand(checkoutNewCmd)
 }
 
 func getBranchNameQuestion() []*survey.Question {
-	var commitMessage = []*survey.Question{
+	var branchNameMessage = []*survey.Question{
 		{
-			Name: "commit",
+			Name: "branch name",
 			Prompt: &survey.Input{
-				Message: "Enter a commit message",
+				Message: "Enter a branch name",
 			},
 			Validate: func(val interface{}) error {
 				// since we are validating an Input, the assertion will always succeed
@@ -48,10 +48,14 @@ func getBranchNameQuestion() []*survey.Question {
 				if str, ok := val.(string); !ok || len(str) != len(x) {
 					return errors.New("Branch name cannot contain spaces")
 				}
+				if str, ok := val.(string); !ok || len(str) == 0 {
+					return errors.New("Branch name can't be empty")
+				}
+
 				return nil
 			},
 		},
 	}
 
-	return commitMessage
+	return branchNameMessage
 }

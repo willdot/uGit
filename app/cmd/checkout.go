@@ -11,6 +11,8 @@ import (
 	survey "gopkg.in/AlecAivazis/survey.v1"
 )
 
+const exit = "Exit"
+
 // checkoutCmd represents the checkout a branch command
 var checkoutCmd = &cobra.Command{
 	Use:   "checkout",
@@ -39,6 +41,10 @@ var checkoutCmd = &cobra.Command{
 			return
 		}
 
+		if selection == exit {
+			return
+		}
+
 		checkout(selection, false)
 	},
 }
@@ -48,12 +54,17 @@ func init() {
 }
 
 func getQuestion(branches []string) []*survey.Question {
+
+	options := []string{exit}
+
+	options = append(options, branches...)
+
 	var selectBranch = []*survey.Question{
 		{
 			Name: "branch",
 			Prompt: &survey.Select{
 				Message: "Select a branch",
-				Options: branches,
+				Options: options,
 			},
 			Validate: survey.Required,
 		},

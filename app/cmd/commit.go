@@ -63,6 +63,10 @@ var commitCmd = &cobra.Command{
 		commitQ := getCommitQuestion()
 		err = survey.Ask(commitQ, &commitMessage)
 
+		if commitMessage == "exit" {
+			return
+		}
+
 		if err != nil {
 			fmt.Printf("error: %v", errors.WithMessage(err, ""))
 			return
@@ -89,7 +93,7 @@ func getCommitQuestion() []*survey.Question {
 		{
 			Name: "commit",
 			Prompt: &survey.Input{
-				Message: "Enter a commit message",
+				Message: `Enter a commit message or type "exit" to cancel`,
 			},
 			Validate: survey.Required,
 		},

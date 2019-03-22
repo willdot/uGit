@@ -20,6 +20,7 @@ func SplitBranches(s string, removeCurrent bool) []string {
 	result := strings.Split(s, "\n")
 	if removeCurrent {
 		result = RemoveCurrentBranch(result)
+		result = RemoveOriginHead(result)
 	}
 
 	return result
@@ -60,6 +61,21 @@ func RemoveCurrentBranch(branches []string) []string {
 		branch := branches[i]
 		RemoveRemoteOriginFromName(&branch)
 		if branch != current && branch != "" && branch != strings.Trim(current, "* ") {
+			result = append(result, branches[i])
+		}
+	}
+
+	return result
+}
+
+//RemoveOriginHead will remove a the head branch
+func RemoveOriginHead(branches []string) []string {
+	var result []string
+
+	for i := 0; i < len(branches); i++ {
+		branch := branches[i]
+		RemoveRemoteOriginFromName(&branch)
+		if !strings.Contains(branch, "HEAD ->") {
 			result = append(result, branches[i])
 		}
 	}

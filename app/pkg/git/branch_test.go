@@ -42,6 +42,16 @@ func TestSplitBranch(t *testing.T) {
 			t.Errorf("got %v want %v", got, want)
 		}
 	})
+
+	t.Run("Split and remove origin head", func(t *testing.T) {
+		want := []string{"Dev", "Master"}
+
+		got := SplitBranches("* current\n\nDev\nMaster\nremotes/origin/current\nremotes/origin/HEAD -> origin/master", true)
+
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %v want %v", got, want)
+		}
+	})
 }
 
 func TestRemoveCurrentBranch(t *testing.T) {

@@ -22,7 +22,7 @@ var checkoutCmd = &cobra.Command{
 			Args:    []string{"branch", "-a"},
 		}
 
-		branches, _, err := git.GetBranches(branchCommander)
+		branches, err := git.GetBranches(branchCommander)
 
 		if err != nil {
 			fmt.Printf("Prompt failed %v\n", err)

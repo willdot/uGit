@@ -38,10 +38,11 @@ var commitCmd = &cobra.Command{
 			var selectedFiles []string
 
 			selectedFiles = selectFilesToTrack(untrackedFiles)
-			fmt.Println("You selected")
-			fmt.Println(selectedFiles)
 
 			if len(selectedFiles) > 0 {
+
+				printSelectedFiles(selectedFiles)
+
 				addFilesCommander := run.Commander{
 					Command: "git",
 					Args:    append([]string{"add"}, selectedFiles...),
@@ -134,6 +135,14 @@ func addAllFiles(s []string) []string {
 		result = append(result, file)
 	}
 	return result
+}
+
+func printSelectedFiles(files []string) {
+	fmt.Println("You selected:")
+
+	for _, file := range files {
+		fmt.Println(file)
+	}
 }
 
 func init() {

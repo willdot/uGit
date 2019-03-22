@@ -34,7 +34,7 @@ var checkoutCmd = &cobra.Command{
 		question := getQuestion(branches)
 		err = survey.Ask(question, &selection)
 
-		checkout(selection)
+		checkout(selection, false)
 	},
 }
 
@@ -57,12 +57,21 @@ func getQuestion(branches []string) []*survey.Question {
 	return selectBranch
 }
 
-func checkout(branchSelection string) {
+func checkout(branchSelection string, new bool) {
 
 	git.RemoveRemoteOriginFromName(&branchSelection)
+
+	args := []string{"checkout"}
+
+	if new {
+		args = append(args, "-b")
+	}
+
+	args = append(args, strings.TrimSpace(branchSelection))
+
 	checkoutCommander := run.Commander{
 		Command: "git",
-		Args:    []string{"checkout", strings.TrimSpace(branchSelection)},
+		Args:    args, //[]string{"checkout", strings.TrimSpace(branchSelection)},
 	}
 
 	result, err := git.CheckoutBranch(checkoutCommander)

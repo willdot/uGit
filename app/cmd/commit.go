@@ -2,7 +2,6 @@ package root
 
 import (
 	"fmt"
-	"sync"
 	"uGit/app/pkg/git"
 	"uGit/app/pkg/run"
 
@@ -37,17 +36,7 @@ var commitCmd = &cobra.Command{
 		if len(untrackedFiles) > 0 {
 			var selectedFiles []string
 
-			var waitGroup sync.WaitGroup
-
-			waitGroup.Add(1)
-			go func() {
-				defer waitGroup.Done()
-				//Get user to select files to commit
-				selectedFiles = selectFilesToTrack(untrackedFiles)
-
-			}()
-
-			waitGroup.Wait()
+			selectedFiles = selectFilesToTrack(untrackedFiles)
 			fmt.Println("You selected")
 			fmt.Println(selectedFiles)
 

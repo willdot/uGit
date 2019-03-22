@@ -6,9 +6,9 @@ import (
 	"uGit/app/pkg/git"
 	"uGit/app/pkg/run"
 
-	"github.com/manifoldco/promptui"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	survey "gopkg.in/AlecAivazis/survey.v1"
 )
 
 // checkoutCmd represents the checkout a branch command
@@ -30,59 +30,36 @@ var checkoutCmd = &cobra.Command{
 
 		branchesSlice := git.SplitBranches(branches, true)
 
-		help := promptui.Styler(promptui.FGRed)("Use arrow keys (or J K) to go up and down.")
-		searchHelp := promptui.Styler(promptui.FGYellow)("Use ? to toggle search.")
-		fmt.Println(help)
-		fmt.Println(searchHelp)
+		fmt.Println(branchesSlice)
 
-		searcher := func(input string, index int) bool {
-			b := branchesSlice[index]
-			branchName := strings.Replace(strings.ToLower(b), " ", "", -1)
-			input = strings.Replace(strings.ToLower(input), " ", "", -1)
+		selection := struct {
+			Branch string
+		}{}
 
-			return strings.Contains(branchName, input)
-		}
+		question := getQuestion(branchesSlice)
+		err = survey.Ask(question, &selection)
 
-		searchKey := promptui.Key{
-			Code:    63,
-			Display: "?",
-		}
-
-		selectKeys := &promptui.SelectKeys{
-			Search: searchKey,
-		}
-
-		iconSelect := promptui.Styler(promptui.FGBlue)("*")
-		templates := &promptui.SelectTemplates{
-			Label:    "{{ . }}",
-			Active:   iconSelect + "{{. | blue }}",
-			Inactive: "  {{ . }}",
-		}
-
-		prompt := promptui.Select{
-			Label:     "Select branch",
-			Items:     branchesSlice,
-			HideHelp:  true,
-			Searcher:  searcher,
-			Keys:      selectKeys,
-			Templates: templates,
-		}
-
-		_, selection, err := prompt.Run()
-
-		fmt.Println(selection)
-
-		if err != nil {
-			fmt.Printf("Prompt failed %v\n", err)
-			return
-		}
-
-		checkout(selection)
+		checkout(selection.Branch)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(checkoutCmd)
+}
+
+func getQuestion(branches []string) []*survey.Question {
+	var selectBranch = []*survey.Question{
+		{
+			Name: "branch",
+			Prompt: &survey.Select{
+				Message: "Select a branch",
+				Options: branches,
+			},
+			Validate: survey.Required,
+		},
+	}
+
+	return selectBranch
 }
 
 func checkout(branchSelection string) {

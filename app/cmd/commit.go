@@ -1,14 +1,13 @@
 package root
 
 import (
-	"errors"
 	"fmt"
 	"sync"
 	"uGit/app/pkg/git"
 	"uGit/app/pkg/run"
 
-	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
+	survey "gopkg.in/AlecAivazis/survey.v1"
 )
 
 var commitCmd = &cobra.Command{
@@ -43,7 +42,6 @@ var commitCmd = &cobra.Command{
 			waitGroup.Add(1)
 			go func() {
 				defer waitGroup.Done()
-				fmt.Println("You have untracked files. Please select any files you wish to add")
 				//Get user to select files to commit
 				selectedFiles = selectFilesToTrack(untrackedFiles)
 
@@ -70,19 +68,10 @@ var commitCmd = &cobra.Command{
 			}
 		}
 
-		validate := func(input string) error {
-			if input == "" {
-				return errors.New("commit message can't be blank")
-			}
-			return nil
-		}
+		commitMessage := ""
 
-		prompt := promptui.Prompt{
-			Label:    "Commit message",
-			Validate: validate,
-		}
-
-		result, err := prompt.Run()
+		commitQ := getCommitQuestion()
+		err = survey.Ask(commitQ, &commitMessage)
 
 		if err != nil {
 			fmt.Printf("Prompt failed %v\n", err)
@@ -91,7 +80,7 @@ var commitCmd = &cobra.Command{
 
 		commitCommander := run.Commander{
 			Command: "git",
-			Args:    []string{"commit", "-am", result},
+			Args:    []string{"commit", "-am", commitMessage},
 		}
 
 		commitResult, err := git.CommitChanges(commitCommander)
@@ -105,50 +94,42 @@ var commitCmd = &cobra.Command{
 	},
 }
 
+func getCommitQuestion() []*survey.Question {
+	var commitMessage = []*survey.Question{
+		{
+			Name: "commit",
+			Prompt: &survey.Input{
+				Message: "Enter a commit message",
+			},
+			Validate: survey.Required,
+		},
+	}
+
+	return commitMessage
+}
+
 func selectFilesToTrack(availableFiles []string) []string {
 
-	options := append([]string{"**Select all**", "**Exit**", "**Exit and ignore selections**"}, availableFiles...)
-	var result string
-	var err error
-	var exit = false
+	options := append([]string{"**Select all**", "**Exit and ignore selections**"}, availableFiles...)
 
-	var selectedFiles []string
+	result := []string{}
+	prompt := &survey.MultiSelect{
+		Message: "You have untracked files. Select files to add.",
+		Options: options,
+	}
 
-	for !exit {
-		prompt := promptui.Select{
-			Label: "What's your text editor",
-			Items: options,
+	survey.AskOne(prompt, &result, nil)
+
+	for i := 0; i < len(result); i++ {
+		if result[i] == "**Select all**" {
+			return availableFiles
 		}
-		index := -1
-		for index < 0 {
-
-			index, result, err = prompt.Run()
-
-			switch result {
-			case "**Exit**":
-				exit = true
-			case "**Exit and ignore selections**":
-				exit = true
-				selectedFiles = nil
-			case "**Select all**":
-				// If all files have already been selected by user,do nothing
-				if len(options) > 3 {
-					selectedFiles = availableFiles
-					options = append(options[:3])
-				}
-			default:
-				selectedFiles = append(selectedFiles, result)
-				options = append(options[:index], options[index+1:]...)
-			}
+		if result[i] == "**Exit and ignore selections**" {
+			return nil
 		}
 	}
 
-	if err != nil {
-		fmt.Printf("Prompt failed %v\n", err)
-		return nil
-	}
-
-	return selectedFiles
+	return result
 }
 
 func addAllFiles(s []string) []string {

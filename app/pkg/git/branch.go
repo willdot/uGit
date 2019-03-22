@@ -52,9 +52,12 @@ func RemoveCurrentBranch(branches []string) []string {
 
 	var result []string
 	current, _ := GetCurrentBranch(branches)
+	//current = strings.Trim(current, "* ")
 
 	for i := 0; i < len(branches); i++ {
-		if branches[i] != current && branches[i] != "" {
+		branch := branches[i]
+		RemoveRemoteOriginFromName(&branch)
+		if branch != current && branch != "" && branch != strings.Trim(current, "* ") {
 			result = append(result, branches[i])
 		}
 	}
@@ -63,9 +66,18 @@ func RemoveCurrentBranch(branches []string) []string {
 }
 
 // CheckoutBranch checks out a branch
-func CheckoutBranch(commander run.ICommander, branch string) (string, error) {
+func CheckoutBranch(commander run.ICommander) (string, error) {
 
 	result, err := run.CommandWithResult(commander)
 
 	return string(result), err
+}
+
+// RemoveRemoteOriginFromName removes the remotes/origin part of the branch
+func RemoveRemoteOriginFromName(branch *string) {
+
+	if strings.Contains((*branch), "remotes/origin/") {
+		x := strings.Split(*branch, "remotes/origin/")
+		*branch = x[1]
+	}
 }

@@ -6,9 +6,9 @@ import (
 	"uGit/app/pkg/git"
 	"uGit/app/pkg/run"
 
-	"github.com/manifoldco/promptui"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	survey "gopkg.in/AlecAivazis/survey.v1"
 )
 
 // checkoutCmd represents the checkout a branch command
@@ -19,7 +19,7 @@ var checkoutCmd = &cobra.Command{
 
 		branchCommander := run.Commander{
 			Command: "git",
-			Args:    []string{"branch"},
+			Args:    []string{"branch", "-a"},
 		}
 		branches, err := git.GetBranches(branchCommander)
 
@@ -30,18 +30,12 @@ var checkoutCmd = &cobra.Command{
 
 		branchesSlice := git.SplitBranches(branches, true)
 
-		prompt := promptui.Select{
-			Label:    "Select branch",
-			Items:    branchesSlice,
-			HideHelp: true,
-		}
+		fmt.Println(branchesSlice)
 
-		_, selection, err := prompt.Run()
+		var selection string
 
-		if err != nil {
-			fmt.Printf("Prompt failed %v\n", err)
-			return
-		}
+		question := getQuestion(branchesSlice)
+		err = survey.Ask(question, &selection)
 
 		checkout(selection)
 	},
@@ -51,13 +45,30 @@ func init() {
 	rootCmd.AddCommand(checkoutCmd)
 }
 
-func checkout(branchSelection string) {
-	checkoutCommander := run.Commander{
-		Command: "git",
-		Args:    []string{"checkout"},
+func getQuestion(branches []string) []*survey.Question {
+	var selectBranch = []*survey.Question{
+		{
+			Name: "branch",
+			Prompt: &survey.Select{
+				Message: "Select a branch",
+				Options: branches,
+			},
+			Validate: survey.Required,
+		},
 	}
 
-	result, err := git.CheckoutBranch(checkoutCommander, strings.Replace(branchSelection, " ", "", -1))
+	return selectBranch
+}
+
+func checkout(branchSelection string) {
+
+	git.RemoveRemoteOriginFromName(&branchSelection)
+	checkoutCommander := run.Commander{
+		Command: "git",
+		Args:    []string{"checkout", strings.Replace(branchSelection, " ", "", -1)},
+	}
+
+	result, err := git.CheckoutBranch(checkoutCommander)
 
 	if err != nil {
 		fmt.Printf("error: %v", errors.WithMessage(err, ""))

@@ -23,9 +23,9 @@ func (f *FakeCommander) RunCommand() ([]byte, error) {
 
 func TestSplitBranch(t *testing.T) {
 	t.Run("Split and keep current", func(t *testing.T) {
-		want := []string{"* Current", "Dev", "Master"}
+		want := []string{"* current", "Dev", "Master"}
 
-		got := SplitBranches("* Current\nDev\nMaster", false)
+		got := SplitBranches("* current\nDev\nMaster", false)
 
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %v want %v", got, want)
@@ -35,7 +35,7 @@ func TestSplitBranch(t *testing.T) {
 	t.Run("Split and remove current", func(t *testing.T) {
 		want := []string{"Dev", "Master"}
 
-		got := SplitBranches("* Current\n\nDev\nMaster", true)
+		got := SplitBranches("* current\n\nDev\nMaster\nremotes/origin/current", true)
 
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %v want %v", got, want)
@@ -45,7 +45,7 @@ func TestSplitBranch(t *testing.T) {
 
 func TestRemoveCurrentBranch(t *testing.T) {
 	want := []string{"dev", "master"}
-	input := []string{"* current", "dev", "master"}
+	input := []string{"* current", "dev", "master", "remotes/origin/current"}
 	got := RemoveCurrentBranch(input)
 
 	if !reflect.DeepEqual(got, want) {
@@ -105,7 +105,7 @@ func TestCheckout(t *testing.T) {
 			Result: []byte(want),
 		}
 
-		got, _ := CheckoutBranch(fake, "fake")
+		got, _ := CheckoutBranch(fake)
 
 		if !strings.Contains(got, want) {
 			t.Errorf("wanted '%s' but got '%s'", want, got)
@@ -119,10 +119,38 @@ func TestCheckout(t *testing.T) {
 			Err: ErrBranchDoesNotExist,
 		}
 
-		_, got := CheckoutBranch(fake, "fake")
+		_, got := CheckoutBranch(fake)
 
 		if got != want {
 			t.Errorf("wanted '%s' but got '%s'", want, got)
 		}
+	})
+}
+
+func TestRemoveRemoteOriginFromName(t *testing.T) {
+	t.Run("Has remotes origin", func(t *testing.T) {
+		input := "remotes/origin/master"
+
+		want := "master"
+
+		RemoveRemoteOriginFromName(&input)
+
+		if input != want {
+			t.Errorf("want %s but got %s", want, input)
+		}
+
+	})
+
+	t.Run("No remotes origin", func(t *testing.T) {
+		input := "bug/origins"
+
+		want := "bug/origins"
+
+		RemoveRemoteOriginFromName(&input)
+
+		if input != want {
+			t.Errorf("want %s but got %s", want, input)
+		}
+
 	})
 }

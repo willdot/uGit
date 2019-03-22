@@ -41,10 +41,13 @@ func GetCurrentBranch(branches []string) (string, error) {
 }
 
 // GetBranches gets all local branches
-func GetBranches(commander run.ICommander) (string, error) {
+func GetBranches(commander run.ICommander) ([]string, error) {
 	result, err := run.CommandWithResult(commander)
 
-	return result, err
+	branches := SplitBranches(result, true)
+	//currentBranch, _ := GetCurrentBranch(branches)
+
+	return branches, err
 }
 
 //RemoveCurrentBranch will remove the current branch from a list of branches
@@ -52,7 +55,6 @@ func RemoveCurrentBranch(branches []string) []string {
 
 	var result []string
 	current, _ := GetCurrentBranch(branches)
-	//current = strings.Trim(current, "* ")
 
 	for i := 0; i < len(branches); i++ {
 		branch := branches[i]

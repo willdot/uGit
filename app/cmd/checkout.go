@@ -32,14 +32,16 @@ var checkoutCmd = &cobra.Command{
 
 		fmt.Println(branchesSlice)
 
-		selection := struct {
+		/*selection := struct {
 			Branch string
-		}{}
+		}{}*/
+
+		var selection string
 
 		question := getQuestion(branchesSlice)
 		err = survey.Ask(question, &selection)
 
-		checkout(selection.Branch)
+		checkout(selection)
 	},
 }
 

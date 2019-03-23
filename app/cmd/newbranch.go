@@ -41,11 +41,10 @@ func getBranchNameQuestion() []*survey.Question {
 				Message: "Enter a branch name",
 			},
 			Validate: func(val interface{}) error {
-				// since we are validating an Input, the assertion will always succeed
 
-				x := strings.Replace(val.(string), " ", "", -1)
+				input := strings.Replace(val.(string), " ", "", -1)
 
-				if str, ok := val.(string); !ok || len(str) != len(x) {
+				if str, ok := val.(string); !ok || len(str) != len(input) {
 					return errors.New("Branch name cannot contain spaces")
 				}
 				if str, ok := val.(string); !ok || len(str) == 0 {

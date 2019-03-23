@@ -2,6 +2,7 @@ package root
 
 import (
 	"fmt"
+	"os"
 	"uGit/app/pkg/git"
 	"uGit/app/pkg/run"
 
@@ -26,7 +27,7 @@ var commitCmd = &cobra.Command{
 
 		if err != nil {
 			fmt.Printf("error: %v", errors.WithMessage(err, ""))
-			return
+			os.Exit(1)
 		}
 
 		if nothingToCommit {
@@ -60,7 +61,7 @@ func resolveUntrackedFiles(untrackedFiles []string) {
 
 		if err != nil {
 			fmt.Printf("Prompt failed %v\n", err)
-			return
+			os.Exit(1)
 		}
 
 		fmt.Println(result)
@@ -111,7 +112,7 @@ func commit() {
 
 	if err != nil {
 		fmt.Printf("error: %v", errors.WithMessage(err, ""))
-		return
+		os.Exit(1)
 	}
 
 	commitCommander := run.Commander{
@@ -123,7 +124,7 @@ func commit() {
 
 	if err != nil {
 		fmt.Printf("error: %v", errors.WithMessage(err, ""))
-		return
+		os.Exit(1)
 	}
 
 	fmt.Println(commitResult)

@@ -2,6 +2,7 @@ package root
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"uGit/app/pkg/git"
 	"uGit/app/pkg/run"
@@ -31,21 +32,9 @@ var checkoutCmd = &cobra.Command{
 			return
 		}
 
-		var selection string
+		branchName := askUser(branches)
 
-		question := getQuestion(branches)
-		err = survey.Ask(question, &selection)
-
-		if err != nil {
-			fmt.Printf("error: %v", errors.WithMessage(err, ""))
-			return
-		}
-
-		if selection == exit {
-			return
-		}
-
-		checkout(selection, false)
+		checkout(branchName, false)
 	},
 }
 
@@ -53,7 +42,25 @@ func init() {
 	rootCmd.AddCommand(checkoutCmd)
 }
 
-func getQuestion(branches []string) []*survey.Question {
+func askUser(branches []string) string {
+
+	var branchName string
+	question := getBranchQuestion(branches)
+	err := survey.Ask(question, &branchName)
+
+	if err != nil {
+		fmt.Printf("error: %v", errors.WithMessage(err, ""))
+		os.Exit(1)
+	}
+
+	if branchName == exit {
+		os.Exit(1)
+	}
+
+	return branchName
+}
+
+func getBranchQuestion(branches []string) []*survey.Question {
 
 	options := []string{exit}
 

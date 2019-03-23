@@ -94,7 +94,7 @@ func checkout(branchSelection string, new bool) {
 
 	checkoutCommander := run.Commander{
 		Command: "git",
-		Args:    args, //[]string{"checkout", strings.TrimSpace(branchSelection)},
+		Args:    args,
 	}
 
 	result, err := git.CheckoutBranch(checkoutCommander)

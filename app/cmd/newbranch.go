@@ -2,6 +2,7 @@ package root
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -15,17 +16,21 @@ var checkoutNewCmd = &cobra.Command{
 	Short: "Checkout a new branch",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		var selection string
+		var branchName string
 
 		question := getBranchNameQuestion()
-		err := survey.Ask(question, &selection)
+		err := survey.Ask(question, &branchName)
 
 		if err != nil {
 			fmt.Printf("error: %v", errors.WithMessage(err, ""))
 			return
 		}
 
-		checkout(selection, true)
+		if branchName == "exit" {
+			os.Exit(1)
+		}
+
+		checkout(branchName, true)
 	},
 }
 
@@ -38,7 +43,7 @@ func getBranchNameQuestion() []*survey.Question {
 		{
 			Name: "branch name",
 			Prompt: &survey.Input{
-				Message: "Enter a branch name",
+				Message: `Enter a branch name or "exit" to cancel`,
 			},
 			Validate: func(val interface{}) error {
 

@@ -3,6 +3,7 @@ package root
 import (
 	"fmt"
 	"os"
+	"strings"
 	"uGit/app/pkg/git"
 	"uGit/app/pkg/run"
 
@@ -37,7 +38,7 @@ var deleteCmd = &cobra.Command{
 		}
 
 		for _, branch := range branchesToDelete {
-			result := deleteBranch(branch)
+			result := deleteBranch(strings.TrimSpace(branch))
 
 			fmt.Println(result)
 		}
@@ -75,13 +76,45 @@ func deleteBranch(branch string) string {
 		Args:    []string{"branch", "-d", branch},
 	}
 
-	status, err := git.DeleteBranch(deleteCommander)
+	result, err := git.DeleteBranch(deleteCommander)
 
 	if err != nil {
-		fmt.Printf("error: %v", errors.WithMessage(err, ""))
-		fmt.Println("end of error")
-		return status
+		handleErrorDelete(result, branch)
+		return ""
 	}
 
-	return status
+	return result
+}
+
+func forceDeleteBranch(branch string) {
+	deleteCommander := run.Commander{
+		Command: "git",
+		Args:    []string{"branch", "-D", branch},
+	}
+
+	result, _ := git.DeleteBranch(deleteCommander)
+	fmt.Println(result)
+}
+
+func handleErrorDelete(errorMessage, branchName string) {
+
+	lines := strings.Split(errorMessage, "\n")
+
+	if strings.HasPrefix(lines[1], "If you are sure you want to delete it, run 'git branch -D") {
+
+		fmt.Println(lines[0])
+		result := false
+
+		prompt := &survey.Confirm{
+			Message: "Would you like to force delete this branch?",
+		}
+
+		survey.AskOne(prompt, &result, nil)
+
+		if result == true {
+			forceDeleteBranch(branchName)
+		}
+	} else {
+		fmt.Println(errorMessage)
+	}
 }

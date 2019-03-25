@@ -30,10 +30,10 @@ var deleteCmd = &cobra.Command{
 			return
 		}
 
-		branchesToDelete := askUserToSelectFilesToDelete(branches, "Select the files you wish to delete")
+		branchesToDelete := askUserToSelectOptions(branches, "Select the branches you wish to delete", false)
 
 		if len(branchesToDelete) == 0 {
-			fmt.Println("No files selected")
+			fmt.Println("No branches selected")
 			os.Exit(1)
 		}
 
@@ -47,26 +47,6 @@ var deleteCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(deleteCmd)
-}
-
-func askUserToSelectFilesToDelete(availableFiles []string, message string) []string {
-	options := append([]string{"**Exit and ignore selections**"}, availableFiles...)
-
-	result := []string{}
-	prompt := &survey.MultiSelect{
-		Message: message,
-		Options: options,
-	}
-
-	survey.AskOne(prompt, &result, nil)
-
-	for i := 0; i < len(result); i++ {
-		if result[i] == "**Exit and ignore selections**" {
-			return nil
-		}
-	}
-
-	return result
 }
 
 func deleteBranch(branch string) string {

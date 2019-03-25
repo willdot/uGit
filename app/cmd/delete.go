@@ -72,13 +72,14 @@ func deleteBranch(branch string) string {
 
 	deleteCommander := run.Commander{
 		Command: "git",
-		Args:    []string{"delete", "-d", branch},
+		Args:    []string{"branch", "-d", branch},
 	}
 
 	status, err := git.DeleteBranch(deleteCommander)
 
 	if err != nil {
 		fmt.Printf("error: %v", errors.WithMessage(err, ""))
+		fmt.Println("end of error")
 		return status
 	}
 

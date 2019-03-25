@@ -60,3 +60,77 @@ func getUntracked(s []string) []string {
 
 	return result
 }
+
+// GetNotStagedFiles will return a slice of files that are not staged for commit
+func GetNotStagedFiles(s string) []string {
+	splitLines := strings.Split(s, "\n")
+
+	var result []string
+
+	for i := 0; i < len(splitLines); i++ {
+		line := strings.TrimSpace(splitLines[i])
+
+		// We want to get the files after this line
+		if line == "Changes not staged for commit:" {
+			notStagedLines := splitLines[i:]
+			// There is an initial blank line before the list of files not staged.
+			// So that we know we have the blank file after the list of files not tracked, use this flag
+			initialBlankLine := false
+
+			for j := 3; j < len(notStagedLines); j++ {
+				line = strings.TrimSpace(notStagedLines[j])
+
+				if line == "" {
+					if initialBlankLine == false {
+						initialBlankLine = true
+					} else {
+						// No more files that are not staged
+						break
+					}
+				} else {
+					result = append(result, line)
+				}
+			}
+			break
+		}
+	}
+
+	return result
+}
+
+// GetFilesToBeCommitted will return a slice of strings from a git status result
+func GetFilesToBeCommitted(s string) []string {
+	splitLines := strings.Split(s, "\n")
+
+	var result []string
+
+	for i := 0; i < len(splitLines); i++ {
+		line := strings.TrimSpace(splitLines[i])
+
+		// We want to get the files after this line
+		if line == "Changes to be committed:" {
+			filesToBeCommitted := splitLines[i:]
+			// There is an initial blank line before the list of files not staged.
+			// So that we know we have the blank file after the list of files not tracked, use this flag
+			initialBlankLine := false
+
+			for j := 2; j < len(filesToBeCommitted); j++ {
+				line = strings.TrimSpace(filesToBeCommitted[j])
+
+				if line == "" {
+					if initialBlankLine == false {
+						initialBlankLine = true
+					} else {
+						// No more files that are not staged
+						break
+					}
+				} else {
+					result = append(result, line)
+				}
+			}
+			break
+		}
+	}
+
+	return result
+}

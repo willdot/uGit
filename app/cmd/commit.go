@@ -3,6 +3,7 @@ package root
 import (
 	"fmt"
 	"os"
+	"strings"
 	"uGit/app/pkg/git"
 	"uGit/app/pkg/run"
 
@@ -16,65 +17,79 @@ var commitCmd = &cobra.Command{
 	Short: "Commit changes",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		untrackedFilesCommander := run.Commander{
-			Command: "git",
-			Args:    []string{"status"},
-		}
+		workOutFilesToBeCommitted()
 
-		status, err := git.Status(untrackedFilesCommander)
+		status := getStatus()
 
-		untrackedFiles, nothingToCommit := git.GetFilesOrNothingToCommit(status)
+		filesToBeCommitted := git.GetFilesToBeCommitted(status)
 
-		if err != nil {
-			fmt.Printf("error: %v", errors.WithMessage(err, ""))
-			os.Exit(1)
-		}
-
-		if nothingToCommit {
+		if len(filesToBeCommitted) == 0 {
 			fmt.Println("Nothing to commit")
 			return
 		}
 
-		if len(untrackedFiles) > 0 {
-			resolveUntrackedFiles(untrackedFiles)
+		fmt.Println("Files to be committed")
+		for _, file := range filesToBeCommitted {
+			fmt.Println(file)
 		}
 
 		commit()
 	},
 }
 
-func resolveUntrackedFiles(untrackedFiles []string) {
-	var selectedFiles []string
+func workOutFilesToBeCommitted() {
+	status := getStatus()
 
-	selectedFiles = selectFilesToTrack(untrackedFiles)
+	untrackedFiles, nothingToCommit := git.GetFilesOrNothingToCommit(status)
 
-	if len(selectedFiles) > 0 {
+	if nothingToCommit {
+		fmt.Println("Nothing to commit")
+		os.Exit(1)
+	}
 
-		printSelectedFiles(selectedFiles)
+	if len(untrackedFiles) > 0 {
+		resolveUntrackedFiles(untrackedFiles)
+	}
 
-		addFilesCommander := run.Commander{
-			Command: "git",
-			Args:    append([]string{"add"}, selectedFiles...),
-		}
+	notStaged := git.GetNotStagedFiles(status)
 
-		result, err := git.Add(addFilesCommander)
-
-		if err != nil {
-			fmt.Printf("Prompt failed %v\n", err)
-			os.Exit(1)
-		}
-
-		fmt.Println(result)
+	if len(notStaged) > 0 {
+		stageFiles(notStaged)
 	}
 }
 
-func selectFilesToTrack(availableFiles []string) []string {
+func getStatus() string {
+	untrackedFilesCommander := run.Commander{
+		Command: "git",
+		Args:    []string{"status"},
+	}
 
+	status, err := git.Status(untrackedFilesCommander)
+
+	if err != nil {
+		fmt.Printf("error: %v", errors.WithMessage(err, ""))
+		os.Exit(1)
+	}
+
+	return status
+}
+
+func resolveUntrackedFiles(untrackedFiles []string) {
+	var selectedFiles []string
+
+	selectedFiles = askUserToSelectFiles(untrackedFiles, "You have untracked files. Select files to add.")
+
+	if len(selectedFiles) > 0 {
+		addFiles(selectedFiles)
+	}
+}
+
+func askUserToSelectFiles(availableFiles []string, message string) []string {
 	options := append([]string{"**Select all**", "**Exit and ignore selections**"}, availableFiles...)
 
 	result := []string{}
 	prompt := &survey.MultiSelect{
-		Message: "You have untracked files. Select files to add.",
+		Message: message,
 		Options: options,
 	}
 
@@ -92,11 +107,45 @@ func selectFilesToTrack(availableFiles []string) []string {
 	return result
 }
 
+func stageFiles(availableFiles []string) {
+	selectedFiles := askUserToSelectFiles(availableFiles, "You have unstaged files. Select files to add.")
+
+	if len(selectedFiles) > 0 {
+		var filesToAdd []string
+
+		for _, file := range selectedFiles {
+			file = strings.Split(file, ":")[1]
+			filesToAdd = append(filesToAdd, strings.TrimSpace(file))
+		}
+
+		addFiles(filesToAdd)
+	}
+}
+
 func printSelectedFiles(files []string) {
 	fmt.Println("You selected:")
 
 	for _, file := range files {
 		fmt.Println(file)
+	}
+}
+
+func addFiles(filesToAdd []string) {
+	if len(filesToAdd) > 0 {
+
+		printSelectedFiles(filesToAdd)
+
+		addFilesCommander := run.Commander{
+			Command: "git",
+			Args:    append([]string{"add"}, filesToAdd...),
+		}
+
+		_, err := git.Add(addFilesCommander)
+
+		if err != nil {
+			fmt.Printf("Prompt failed %v\n", err)
+			os.Exit(1)
+		}
 	}
 }
 
@@ -117,7 +166,7 @@ func commit() {
 
 	commitCommander := run.Commander{
 		Command: "git",
-		Args:    []string{"commit", "-am", commitMessage},
+		Args:    []string{"commit", "-m", commitMessage},
 	}
 
 	commitResult, err := git.CommitChanges(commitCommander)

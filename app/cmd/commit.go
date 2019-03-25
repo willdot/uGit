@@ -207,6 +207,7 @@ func handleErrorPush(errorMessage string) {
 
 			if !result {
 				return
+
 			}
 		}
 

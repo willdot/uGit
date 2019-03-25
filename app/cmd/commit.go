@@ -12,6 +12,8 @@ import (
 	survey "gopkg.in/AlecAivazis/survey.v1"
 )
 
+var pushFlag bool
+
 var commitCmd = &cobra.Command{
 	Use:   "com",
 	Short: "Commit changes",
@@ -34,6 +36,11 @@ var commitCmd = &cobra.Command{
 		}
 
 		commit()
+
+		if pushFlag {
+			push()
+		}
+
 	},
 }
 
@@ -156,6 +163,22 @@ func commit() {
 	fmt.Println(commitResult)
 }
 
+func push() {
+	pushCommander := run.Commander{
+		Command: "git",
+		Args:    []string{"push"},
+	}
+
+	result, err := run.CommandWithResult(pushCommander)
+
+	if err != nil {
+		fmt.Printf("error: %v", errors.WithMessage(err, ""))
+		os.Exit(1)
+	}
+
+	fmt.Println(result)
+}
+
 func getCommitQuestion() []*survey.Question {
 	var commitQuestion = []*survey.Question{
 		{
@@ -172,4 +195,5 @@ func getCommitQuestion() []*survey.Question {
 
 func init() {
 	rootCmd.AddCommand(commitCmd)
+	commitCmd.Flags().BoolVarP(&pushFlag, "push", "p", false, "push after commit")
 }

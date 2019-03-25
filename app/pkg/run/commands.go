@@ -6,7 +6,8 @@ import (
 
 // ICommander is an interface for running os/exec Commands
 type ICommander interface {
-	RunCommand() ([]byte, error)
+	//RunCommand() ([]byte, error)
+	CommandWithResult() (string, error)
 }
 
 // Commander is a real struct that can be used to run os commands.
@@ -17,15 +18,15 @@ type Commander struct {
 	Args    []string
 }
 
-// RunCommand runs an os command and returns the result
-func (r Commander) RunCommand() ([]byte, error) {
-	return exec.Command(r.Command, r.Args...).CombinedOutput()
+// runCommand runs an os command and returns the result
+func runCommand(command string, args []string) ([]byte, error) {
+	return exec.Command(command, args...).CombinedOutput()
 }
 
 // CommandWithResult will run a command and return the output or an error
-func CommandWithResult(commander ICommander) (string, error) {
+func (r Commander) CommandWithResult() (string, error) {
 
-	output, err := commander.RunCommand()
+	output, err := runCommand(r.Command, r.Args)
 
 	return string(output), err
 }

@@ -9,7 +9,7 @@ func TestCommit(t *testing.T) {
 	want := "success"
 
 	fake := &FakeCommander{
-		Result: []byte(want),
+		Result: want,
 	}
 
 	got, _ := CommitChanges(fake)

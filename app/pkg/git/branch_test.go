@@ -8,15 +8,15 @@ import (
 
 // FakeCommander is used for mocking
 type FakeCommander struct {
-	Result       []byte
+	Result       string
 	ResultString []string
 	Err          error
 }
 
-func (f *FakeCommander) RunCommand() ([]byte, error) {
+func (f *FakeCommander) CommandWithResult() (string, error) {
 
 	if f.Err != nil {
-		return nil, f.Err
+		return "", f.Err
 	}
 
 	return f.Result, nil
@@ -113,7 +113,7 @@ func TestCheckout(t *testing.T) {
 		want := "Switched to branch 'fake'"
 
 		fake := &FakeCommander{
-			Result: []byte(want),
+			Result: want,
 		}
 
 		got, _ := CheckoutBranch(fake)

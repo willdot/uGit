@@ -173,7 +173,6 @@ func push() {
 
 	if err != nil {
 		handleErrorPush(result)
-
 	} else {
 		fmt.Println(result)
 	}

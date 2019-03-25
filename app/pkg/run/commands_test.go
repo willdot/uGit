@@ -12,7 +12,7 @@ func TestCommandWithResultReturnsAStringValue(t *testing.T) {
 			Command: "go",
 			Args:    []string{"env"},
 		}
-		got, _ := CommandWithResult(commander)
+		got, _ := commander.CommandWithResult()
 
 		if dontWant == got {
 			t.Errorf("didn't want nothing, but got '%s'", got)
@@ -23,7 +23,7 @@ func TestCommandWithResultReturnsAStringValue(t *testing.T) {
 		commander := Commander{
 			Command: "hh",
 		}
-		_, err := CommandWithResult(commander)
+		_, err := commander.CommandWithResult()
 
 		if err == nil {
 			t.Errorf("wanted error but didn't get one")

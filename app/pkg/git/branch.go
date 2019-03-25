@@ -43,7 +43,7 @@ func GetCurrentBranch(branches []string) (string, error) {
 
 // GetBranches gets all local branches
 func GetBranches(commander run.ICommander) ([]string, error) {
-	result, err := run.CommandWithResult(commander)
+	result, err := commander.CommandWithResult()
 
 	branches := SplitBranches(result, true)
 
@@ -85,7 +85,7 @@ func RemoveOriginHead(branches *[]string) {
 // CheckoutBranch checks out a branch
 func CheckoutBranch(commander run.ICommander) (string, error) {
 
-	result, err := run.CommandWithResult(commander)
+	result, err := commander.CommandWithResult()
 
 	return string(result), err
 }

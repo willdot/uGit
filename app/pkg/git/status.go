@@ -7,7 +7,7 @@ import (
 
 // Status will run git status and return the result
 func Status(commander run.ICommander) (string, error) {
-	result, err := run.CommandWithResult(commander)
+	result, err := commander.CommandWithResult()
 
 	return string(result), err
 }

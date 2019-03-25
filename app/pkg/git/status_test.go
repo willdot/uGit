@@ -10,7 +10,7 @@ func TestStatus(t *testing.T) {
 	want := "something"
 
 	fake := &FakeCommander{
-		Result: []byte(want),
+		Result: want,
 	}
 
 	got, _ := Status(fake)

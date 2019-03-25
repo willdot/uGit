@@ -9,7 +9,7 @@ func TestDeleteBranch(t *testing.T) {
 	want := "success"
 
 	fake := &FakeCommander{
-		Result: []byte(want),
+		Result: want,
 	}
 
 	got, _ := DeleteBranch(fake)

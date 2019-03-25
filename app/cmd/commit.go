@@ -169,7 +169,7 @@ func push() {
 		Args:    []string{"push"},
 	}
 
-	result, err := run.CommandWithResult(pushCommander)
+	result, err := git.Push(pushCommander)
 
 	if err != nil {
 		handleErrorPush(result)
@@ -186,26 +186,32 @@ func pushSetUpstream(command string) {
 		Args:    args[1:],
 	}
 
-	result, _ := run.CommandWithResult(pushCommander)
+	result, _ := git.Push(pushCommander)
 	fmt.Println(result)
 }
 
 func handleErrorPush(errorMessage string) {
 	lines := strings.Split(errorMessage, "\n")
 
-	if strings.HasPrefix(lines[1], "To push the current branch and set the remote as upstream, use") {
-		fmt.Println(lines[0])
+	for _, line := range lines {
+		if strings.HasPrefix(line, "To push the current branch and set the remote as upstream, use") {
+			fmt.Println(lines[0])
 
-		result := false
+			result := false
 
-		prompt := &survey.Confirm{
-			Message: "Would you like to set remote as upstream?",
+			prompt := &survey.Confirm{
+				Message: "Would you like to set remote as upstream?",
+			}
+
+			survey.AskOne(prompt, &result, nil)
+
+			if !result {
+				return
+			}
 		}
 
-		survey.AskOne(prompt, &result, nil)
-
-		if result == true {
-			pushSetUpstream(lines[3])
+		if strings.HasPrefix(strings.TrimSpace(line), "git push") {
+			pushSetUpstream(line)
 		}
 	}
 }

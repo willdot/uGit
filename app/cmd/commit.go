@@ -3,6 +3,7 @@ package root
 import (
 	"fmt"
 	"os"
+	"strings"
 	"uGit/app/pkg/git"
 	"uGit/app/pkg/run"
 
@@ -39,7 +40,15 @@ var commitCmd = &cobra.Command{
 			resolveUntrackedFiles(untrackedFiles)
 		}
 
-		commit()
+		notStaged := git.GetNotStagedFiles(status)
+
+		fmt.Println(notStaged)
+
+		if len(notStaged) > 0 {
+			stageFiles(notStaged)
+		}
+
+		//commit()
 	},
 }
 
@@ -57,14 +66,12 @@ func resolveUntrackedFiles(untrackedFiles []string) {
 			Args:    append([]string{"add"}, selectedFiles...),
 		}
 
-		result, err := git.Add(addFilesCommander)
+		_, err := git.Add(addFilesCommander)
 
 		if err != nil {
 			fmt.Printf("Prompt failed %v\n", err)
 			os.Exit(1)
 		}
-
-		fmt.Println(result)
 	}
 }
 
@@ -75,6 +82,54 @@ func selectFilesToTrack(availableFiles []string) []string {
 	result := []string{}
 	prompt := &survey.MultiSelect{
 		Message: "You have untracked files. Select files to add.",
+		Options: options,
+	}
+
+	survey.AskOne(prompt, &result, nil)
+
+	for i := 0; i < len(result); i++ {
+		if result[i] == "**Select all**" {
+			return availableFiles
+		}
+		if result[i] == "**Exit and ignore selections**" {
+			return nil
+		}
+	}
+
+	return result
+}
+
+func stageFiles(availableFiles []string) {
+	selectedFiles := selectFilesToStage(availableFiles)
+
+	if len(selectedFiles) > 0 {
+		var filesToAdd []string
+
+		for _, file := range selectedFiles {
+			file = strings.Split(file, ":")[1]
+			filesToAdd = append(filesToAdd, strings.TrimSpace(file))
+		}
+
+		addFilesCommander := run.Commander{
+			Command: "git",
+			Args:    append([]string{"add"}, filesToAdd...),
+		}
+
+		_, err := git.Add(addFilesCommander)
+
+		if err != nil {
+			fmt.Printf("Prompt failed %v\n", err)
+			os.Exit(1)
+		}
+	}
+}
+
+func selectFilesToStage(availableFiles []string) []string {
+	options := append([]string{"**Select all**", "**Exit and ignore selections**"}, availableFiles...)
+
+	result := []string{}
+	prompt := &survey.MultiSelect{
+		Message: "You have unstaged files. Select files to add.",
 		Options: options,
 	}
 

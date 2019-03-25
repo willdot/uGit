@@ -52,6 +52,26 @@ func TestGetTrackedFiles(t *testing.T) {
 	})
 }
 
+func TestGetNotStagedFiles(t *testing.T) {
+
+	t.Run("Files not staged", func(t *testing.T) {
+		want := []string{"modified:   something.go", "modified:   something/something.go"}
+
+		got := GetNotStagedFiles(notStagedForCommit)
+
+		assertSlice(t, got, want)
+	})
+
+	t.Run("No files un staged", func(t *testing.T) {
+		want := 0
+
+		got := GetNotStagedFiles(untracked)
+
+		assertSliceCount(t, len(got), want)
+	})
+
+}
+
 func assertSlice(t *testing.T, got, want []string) {
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %v want %v", got, want)
@@ -61,6 +81,12 @@ func assertSlice(t *testing.T, got, want []string) {
 func assertBool(t *testing.T, got, want bool) {
 	if got != want {
 		t.Errorf("got %v but wanted %v", got, want)
+	}
+}
+
+func assertSliceCount(t *testing.T, got, want int) {
+	if got != want {
+		t.Errorf("expected count was: %v but got: %v", want, got)
 	}
 }
 
@@ -134,5 +160,21 @@ new file:   New folder/New Text Document - Copy.txt
 new file:   New folder/New Text Document.txt
 new file:   a.txt
 new file:   b.txt
+
+`
+var notStagedForCommit = `On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        modified:   New folder/New Text Document - Copy.txt
+        modified:   one.txt
+        modified:   pp/p
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+		modified:   something.go
+		modified:   something/something.go
 
 `

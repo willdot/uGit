@@ -19,8 +19,10 @@ func SplitBranches(s string, removeCurrent bool) []string {
 
 	result := strings.Split(s, "\n")
 	if removeCurrent {
-		result = RemoveCurrentBranch(result)
-		result = RemoveOriginHead(result)
+		/*result = RemoveCurrentBranch(result)
+		result = RemoveOriginHead(result)*/
+		RemoveCurrentBranch(&result)
+		RemoveOriginHead(&result)
 	}
 
 	return result
@@ -46,41 +48,40 @@ func GetBranches(commander run.ICommander) ([]string, error) {
 	result, err := run.CommandWithResult(commander)
 
 	branches := SplitBranches(result, true)
-	//currentBranch, _ := GetCurrentBranch(branches)
 
 	return branches, err
 }
 
 //RemoveCurrentBranch will remove the current branch from a list of branches
-func RemoveCurrentBranch(branches []string) []string {
+func RemoveCurrentBranch(branches *[]string) {
 
 	var result []string
-	current, _ := GetCurrentBranch(branches)
+	current, _ := GetCurrentBranch(*branches)
 
-	for i := 0; i < len(branches); i++ {
-		branch := branches[i]
+	for i := 0; i < len(*branches); i++ {
+		branch := (*branches)[i]
 		RemoveRemoteOriginFromName(&branch)
 		if branch != current && branch != "" && branch != strings.Trim(current, "* ") {
-			result = append(result, branches[i])
+			result = append(result, (*branches)[i])
 		}
 	}
 
-	return result
+	*branches = result
 }
 
 //RemoveOriginHead will remove a the head branch
-func RemoveOriginHead(branches []string) []string {
+func RemoveOriginHead(branches *[]string) {
 	var result []string
 
-	for i := 0; i < len(branches); i++ {
-		branch := branches[i]
+	for i := 0; i < len(*branches); i++ {
+		branch := (*branches)[i]
 		RemoveRemoteOriginFromName(&branch)
 		if !strings.Contains(branch, "HEAD ->") {
-			result = append(result, branches[i])
+			result = append(result, (*branches)[i])
 		}
 	}
 
-	return result
+	*branches = result
 }
 
 // CheckoutBranch checks out a branch

@@ -57,10 +57,10 @@ func TestSplitBranch(t *testing.T) {
 func TestRemoveCurrentBranch(t *testing.T) {
 	want := []string{"dev", "master"}
 	input := []string{"* current", "dev", "master", "remotes/origin/current"}
-	got := RemoveCurrentBranch(input)
+	RemoveCurrentBranch(&input)
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got %v want %v", got, want)
+	if !reflect.DeepEqual(input, want) {
+		t.Errorf("got %v want %v", input, want)
 	}
 }
 

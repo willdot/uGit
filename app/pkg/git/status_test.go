@@ -72,6 +72,14 @@ func TestGetNotStagedFiles(t *testing.T) {
 
 }
 
+func TestGetFilesToBeCommitted(t *testing.T) {
+	want := []string{"modified:   something.go", "modified:   something/something.go"}
+
+	got := GetFilesToBeCommitted(filesToBeCommitted)
+
+	assertSlice(t, got, want)
+}
+
 func assertSlice(t *testing.T, got, want []string) {
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %v want %v", got, want)
@@ -176,5 +184,21 @@ Changes not staged for commit:
 
 		modified:   something.go
 		modified:   something/something.go
+
+`
+
+var filesToBeCommitted = `On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        modified:   something.go
+		modified:   something/something.go
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   New folder/as
+        modified:   pp/ppp
 
 `

@@ -42,13 +42,20 @@ var commitCmd = &cobra.Command{
 
 		notStaged := git.GetNotStagedFiles(status)
 
-		fmt.Println(notStaged)
-
 		if len(notStaged) > 0 {
 			stageFiles(notStaged)
 		}
 
-		//commit()
+		status, err = git.Status(untrackedFilesCommander)
+
+		filesToBeCommitted := git.GetFilesToBeCommitted(status)
+
+		fmt.Println("Files to be committed")
+		for _, file := range filesToBeCommitted {
+			fmt.Println(file)
+		}
+
+		commit()
 	},
 }
 
@@ -172,7 +179,7 @@ func commit() {
 
 	commitCommander := run.Commander{
 		Command: "git",
-		Args:    []string{"commit", "-am", commitMessage},
+		Args:    []string{"commit", "-m", commitMessage},
 	}
 
 	commitResult, err := git.CommitChanges(commitCommander)

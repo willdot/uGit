@@ -180,7 +180,7 @@ func push() {
 
 func pushSetUpstream(command string) {
 
-	args := strings.Split(command, " ")
+	args := strings.Split(strings.TrimSpace(command), " ")
 	pushCommander := run.Commander{
 		Command: "git",
 		Args:    args[1:],
@@ -191,7 +191,7 @@ func pushSetUpstream(command string) {
 }
 
 func handleErrorPush(errorMessage string) {
-	lines := strings.Split(strings.TrimSpace(errorMessage), "\n")
+	lines := strings.Split(errorMessage, "\n")
 
 	if strings.HasPrefix(lines[1], "To push the current branch and set the remote as upstream, use") {
 		fmt.Println(lines[0])

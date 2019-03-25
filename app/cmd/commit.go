@@ -172,7 +172,7 @@ func push() {
 	result, err := run.CommandWithResult(pushCommander)
 
 	if err != nil {
-		fmt.Printf("error: %v", errors.WithMessage(err, ""))
+		fmt.Println(result)
 		os.Exit(1)
 	}
 

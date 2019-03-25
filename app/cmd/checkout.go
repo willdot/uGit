@@ -14,7 +14,6 @@ import (
 
 const exit = "Exit"
 
-// checkoutCmd represents the checkout a branch command
 var checkoutCmd = &cobra.Command{
 	Use:   "checkout",
 	Short: "Checkout a branch",

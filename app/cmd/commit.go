@@ -13,7 +13,7 @@ import (
 )
 
 var commitCmd = &cobra.Command{
-	Use:   "commit",
+	Use:   "com",
 	Short: "Commit changes",
 	Run: func(cmd *cobra.Command, args []string) {
 

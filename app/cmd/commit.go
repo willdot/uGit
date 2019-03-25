@@ -23,7 +23,7 @@ var commitCmd = &cobra.Command{
 
 		status, err := git.Status(untrackedFilesCommander)
 
-		untrackedFiles, nothingToCommit := git.GetFiles(status)
+		untrackedFiles, nothingToCommit := git.GetFilesOrNothingToCommit(status)
 
 		if err != nil {
 			fmt.Printf("error: %v", errors.WithMessage(err, ""))

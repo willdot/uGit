@@ -19,8 +19,6 @@ func SplitBranches(s string, removeCurrent bool) []string {
 
 	result := strings.Split(s, "\n")
 	if removeCurrent {
-		/*result = RemoveCurrentBranch(result)
-		result = RemoveOriginHead(result)*/
 		RemoveCurrentBranch(&result)
 		RemoveOriginHead(&result)
 	}

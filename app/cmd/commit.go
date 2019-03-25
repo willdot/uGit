@@ -191,7 +191,7 @@ func pushSetUpstream(command string) {
 }
 
 func handleErrorPush(errorMessage string) {
-	lines := strings.Split(errorMessage, "\n")
+	lines := strings.Split(strings.TrimSpace(errorMessage), "\n")
 
 	if strings.HasPrefix(lines[1], "To push the current branch and set the remote as upstream, use") {
 		fmt.Println(lines[0])

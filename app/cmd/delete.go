@@ -30,10 +30,10 @@ var deleteCmd = &cobra.Command{
 			return
 		}
 
-		branchesToDelete := askUserToSelectFilesToDelete(branches, "Select the files you wish to delete")
+		branchesToDelete := askUserToSelectFilesToDelete(branches, "Select the branches you wish to delete")
 
 		if len(branchesToDelete) == 0 {
-			fmt.Println("No files selected")
+			fmt.Println("No branches selected")
 			os.Exit(1)
 		}
 

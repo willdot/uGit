@@ -77,38 +77,15 @@ func getStatus() string {
 func resolveUntrackedFiles(untrackedFiles []string) {
 	var selectedFiles []string
 
-	selectedFiles = askUserToSelectFiles(untrackedFiles, "You have untracked files. Select files to add.")
+	selectedFiles = askUserToSelectOptions(untrackedFiles, "You have untracked files. Select files to add.", true)
 
 	if len(selectedFiles) > 0 {
 		addFiles(selectedFiles)
 	}
 }
 
-func askUserToSelectFiles(availableFiles []string, message string) []string {
-	options := append([]string{"**Select all**", "**Exit and ignore selections**"}, availableFiles...)
-
-	result := []string{}
-	prompt := &survey.MultiSelect{
-		Message: message,
-		Options: options,
-	}
-
-	survey.AskOne(prompt, &result, nil)
-
-	for i := 0; i < len(result); i++ {
-		if result[i] == "**Select all**" {
-			return availableFiles
-		}
-		if result[i] == "**Exit and ignore selections**" {
-			return nil
-		}
-	}
-
-	return result
-}
-
 func stageFiles(availableFiles []string) {
-	selectedFiles := askUserToSelectFiles(availableFiles, "You have unstaged files. Select files to add.")
+	selectedFiles := askUserToSelectOptions(availableFiles, "You have unstaged files. Select files to add.", true)
 
 	if len(selectedFiles) > 0 {
 		var filesToAdd []string

@@ -12,7 +12,7 @@ import (
 
 // checkoutNewCmd represents the checkout of a new branch command
 var checkoutNewCmd = &cobra.Command{
-	Use:   "chk-n",
+	Use:   "cko-n",
 	Short: "Checkout a new branch",
 	Run: func(cmd *cobra.Command, args []string) {
 

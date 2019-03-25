@@ -173,9 +173,10 @@ func push() {
 
 	if err != nil {
 		handleErrorPush(result)
-	}
 
-	fmt.Println(result)
+	} else {
+		fmt.Println(result)
+	}
 }
 
 func pushSetUpstream(command string) {

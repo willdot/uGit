@@ -12,8 +12,8 @@ func Status(commander run.ICommander) (string, error) {
 	return string(result), err
 }
 
-// GetFiles will return a slice of files that aren't tracked and if there is nothing to commit, a true flag
-func GetFiles(s string) ([]string, bool) {
+// GetFilesOrNothingToCommit will return a slice of files that aren't tracked and if there is nothing to commit, a true flag
+func GetFilesOrNothingToCommit(s string) ([]string, bool) {
 
 	x := strings.Split(s, "\n")
 

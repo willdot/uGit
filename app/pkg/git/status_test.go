@@ -24,28 +24,28 @@ func TestGetTrackedFiles(t *testing.T) {
 	want := []string{"something/something.go", "something/else.go", "Some folder/"}
 
 	t.Run("Untracked only", func(t *testing.T) {
-		got, noCommit := GetFiles(untracked)
+		got, noCommit := GetFilesOrNothingToCommit(untracked)
 
 		assertSlice(t, got, want)
 		assertBool(t, noCommit, false)
 	})
 
 	t.Run("Tracked and untracked", func(t *testing.T) {
-		got, noCommit := GetFiles(trackedAndUntracked)
+		got, noCommit := GetFilesOrNothingToCommit(trackedAndUntracked)
 
 		assertSlice(t, got, want)
 		assertBool(t, noCommit, false)
 	})
 
 	t.Run("Nothing to commit", func(t *testing.T) {
-		got, noCommit := GetFiles(nothingToCommit)
+		got, noCommit := GetFilesOrNothingToCommit(nothingToCommit)
 
 		assertSlice(t, got, nil)
 		assertBool(t, noCommit, true)
 	})
 
 	t.Run("No untracked files, but changes", func(t *testing.T) {
-		got, noCommit := GetFiles(noUntrackedButChanges)
+		got, noCommit := GetFilesOrNothingToCommit(noUntrackedButChanges)
 
 		assertSlice(t, got, nil)
 		assertBool(t, noCommit, false)
@@ -67,25 +67,25 @@ func assertBool(t *testing.T, got, want bool) {
 func BenchmarkGetTrackedFiles(b *testing.B) {
 	b.Run("Untracked only", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			GetFiles(untracked)
+			GetFilesOrNothingToCommit(untracked)
 		}
 	})
 
 	b.Run("Tracked and untracked", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			GetFiles(trackedAndUntracked)
+			GetFilesOrNothingToCommit(trackedAndUntracked)
 		}
 	})
 
 	b.Run("Nothing to commit", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			GetFiles(nothingToCommit)
+			GetFilesOrNothingToCommit(nothingToCommit)
 		}
 	})
 
 	b.Run("No untracked files, but changes", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			GetFiles(noUntrackedButChanges)
+			GetFilesOrNothingToCommit(noUntrackedButChanges)
 		}
 	})
 }

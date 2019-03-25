@@ -14,7 +14,7 @@ import (
 
 // deleteCmd represents the delete command
 var deleteCmd = &cobra.Command{
-	Use:   "delete",
+	Use:   "d",
 	Short: "Delete branches",
 	Run: func(cmd *cobra.Command, args []string) {
 

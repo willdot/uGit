@@ -12,8 +12,10 @@ import (
 	survey "gopkg.in/AlecAivazis/survey.v1"
 )
 
+var pushFlag bool
+
 var commitCmd = &cobra.Command{
-	Use:   "commit",
+	Use:   "com",
 	Short: "Commit changes",
 	Run: func(cmd *cobra.Command, args []string) {
 
@@ -34,6 +36,11 @@ var commitCmd = &cobra.Command{
 		}
 
 		commit()
+
+		if pushFlag {
+			push()
+		}
+
 	},
 }
 
@@ -156,6 +163,59 @@ func commit() {
 	fmt.Println(commitResult)
 }
 
+func push() {
+	pushCommander := run.Commander{
+		Command: "git",
+		Args:    []string{"push"},
+	}
+
+	result, err := git.Push(pushCommander)
+
+	if err != nil {
+		handleErrorPush(result)
+	} else {
+		fmt.Println(result)
+	}
+}
+
+func pushSetUpstream(command string) {
+
+	args := strings.Split(strings.TrimSpace(command), " ")
+	pushCommander := run.Commander{
+		Command: "git",
+		Args:    args[1:],
+	}
+
+	result, _ := git.Push(pushCommander)
+	fmt.Println(result)
+}
+
+func handleErrorPush(errorMessage string) {
+	lines := strings.Split(errorMessage, "\n")
+
+	for _, line := range lines {
+		if strings.HasPrefix(line, "To push the current branch and set the remote as upstream, use") {
+			fmt.Println(lines[0])
+
+			result := false
+
+			prompt := &survey.Confirm{
+				Message: "Would you like to set remote as upstream?",
+			}
+
+			survey.AskOne(prompt, &result, nil)
+
+			if !result {
+				return
+			}
+		}
+
+		if strings.HasPrefix(strings.TrimSpace(line), "git push") {
+			pushSetUpstream(line)
+		}
+	}
+}
+
 func getCommitQuestion() []*survey.Question {
 	var commitQuestion = []*survey.Question{
 		{
@@ -172,4 +232,5 @@ func getCommitQuestion() []*survey.Question {
 
 func init() {
 	rootCmd.AddCommand(commitCmd)
+	commitCmd.Flags().BoolVarP(&pushFlag, "push", "p", false, "push after commit")
 }

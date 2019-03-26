@@ -1,9 +1,36 @@
 package git
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
+	"uGit/app/pkg/run"
 )
+
+func ExampleStatus() {
+
+	statusCommander := run.Commander{
+		Command: "git",
+		Args:    []string{"status"},
+	}
+
+	result, err := Status(statusCommander)
+
+	fmt.Println(result)
+	fmt.Println(err)
+
+	// Output:
+	/* On branch godoc
+	Changes not staged for commit:
+	(use "git add <file>..." to update what will be committed)
+	(use "git checkout -- <file>..." to discard changes in working directory)
+
+				modified:   app/pkg/git/add.go
+				modified:   app/pkg/git/add_test.go
+				modified:   app/pkg/git/status_test.go
+
+	no changes added to commit (use "git add" and/or "git commit -a")*/
+}
 
 func TestStatus(t *testing.T) {
 

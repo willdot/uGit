@@ -1,6 +1,10 @@
 package git
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+	"uGit/app/pkg/run"
+)
 
 func TestAdd(t *testing.T) {
 
@@ -15,4 +19,19 @@ func TestAdd(t *testing.T) {
 	if got != want {
 		t.Errorf("want '%s' but got '%s'", want, got)
 	}
+}
+
+func ExampleAdd() {
+
+	addCommander := run.Commander{
+		Command: "git",
+		Args:    []string{"add", "."},
+	}
+
+	result, err := Add(addCommander)
+
+	fmt.Println(result)
+	fmt.Println(err)
+
+	// Output: "" ""
 }

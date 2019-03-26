@@ -30,7 +30,7 @@ var deleteCmd = &cobra.Command{
 			return
 		}
 
-		branchesToDelete := askUserToSelectOptions(branches, "Select the branches you wish to delete", false)
+		branchesToDelete := askUserToSelectOptions(branches, "Select branches to delete", false)
 
 		if len(branchesToDelete) == 0 {
 			fmt.Println("No branches selected")

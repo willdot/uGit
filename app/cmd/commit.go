@@ -84,7 +84,7 @@ func getStatus() string {
 func resolveUntrackedFiles(untrackedFiles []string) {
 	var selectedFiles []string
 
-	selectedFiles = askUserToSelectOptions(untrackedFiles, "You have untracked files. Select files to add.", true)
+	selectedFiles = askUserToSelectOptions(untrackedFiles, "Untracked files. Select files to add.", true)
 
 	if len(selectedFiles) > 0 {
 		addFiles(selectedFiles)
@@ -92,7 +92,7 @@ func resolveUntrackedFiles(untrackedFiles []string) {
 }
 
 func stageFiles(availableFiles []string) {
-	selectedFiles := askUserToSelectOptions(availableFiles, "You have unstaged files. Select files to add.", true)
+	selectedFiles := askUserToSelectOptions(availableFiles, "Unstaged files. Select files to add.", true)
 
 	if len(selectedFiles) > 0 {
 		var filesToAdd []string

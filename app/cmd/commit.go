@@ -140,7 +140,7 @@ func commit() {
 	err := survey.Ask(commitQ, &commitMessage)
 
 	if commitMessage == "exit" {
-		return
+		os.Exit(0)
 	}
 
 	if err != nil {

@@ -39,7 +39,7 @@ ugit cko
 ### New branch
 This will allow you to checkout a new branch
 ```
-ugit cko-n
+ugit cko -n
 ```
 
 ### Commit

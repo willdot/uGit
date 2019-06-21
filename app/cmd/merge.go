@@ -2,6 +2,7 @@ package root
 
 import (
 	"fmt"
+	"strings"
 	"uGit/app/pkg/git"
 	"uGit/app/pkg/run"
 
@@ -36,7 +37,7 @@ var mergeCmd = &cobra.Command{
 func merge(branchSelection string) {
 	git.RemoveRemoteOriginFromName(&branchSelection)
 
-	args := []string{"merge", branchSelection}
+	args := []string{"merge", strings.TrimSpace(branchSelection)}
 
 	mergeCommander := run.Commander{
 		Command: "git",

@@ -51,3 +51,7 @@ func merge(branchSelection string) {
 
 	fmt.Println(result)
 }
+
+func init() {
+	rootCmd.AddCommand(mergeCmd)
+}

@@ -11,9 +11,9 @@ import (
 )
 
 var mergeCmd = &cobra.Command{
-	Use : "merge",
-	Short : "Merge branches",
-	Run : func(cmd *cobra.Command, args []string) {
+	Use:   "merge",
+	Short: "Merge branches",
+	Run: func(cmd *cobra.Command, args []string) {
 		var branchName string
 
 		branchCommander := run.Commander{

@@ -18,10 +18,8 @@ export PATH=$PATH:$GOPATH/bin
 Clicked [here](https://willdot.github.io/15SettingUpGo/) for a guide on how to do this.
 
 
-Clone the repo and then run:
-
 ```
-go install
+go get github.com/willdot/uGit
 ```
 
 

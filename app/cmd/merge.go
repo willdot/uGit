@@ -3,11 +3,11 @@ package root
 import (
 	"fmt"
 	"strings"
-	"uGit/app/pkg/git"
-	"uGit/app/pkg/run"
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/willdot/uGit/app/pkg/git"
+	"github.com/willdot/uGit/app/pkg/run"
 )
 
 var mergeCmd = &cobra.Command{

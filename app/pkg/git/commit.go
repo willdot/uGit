@@ -1,6 +1,6 @@
 package git
 
-import "uGit/app/pkg/run"
+import "github.com/willdot/uGit/app/pkg/run"
 
 // CommitChanges will run git commit
 func CommitChanges(commander run.ICommander) (string, error) {

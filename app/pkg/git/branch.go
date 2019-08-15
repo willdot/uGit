@@ -3,9 +3,8 @@ package git
 import (
 	"strings"
 
-	"uGit/app/pkg/run"
-
 	"github.com/pkg/errors"
+	"github.com/willdot/uGit/app/pkg/run"
 )
 
 // ErrNoCurrentBranchFound is an error returned when the input branches doesn't contain a current branch indicator

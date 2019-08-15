@@ -2,7 +2,8 @@ package git
 
 import (
 	"strings"
-	"uGit/app/pkg/run"
+
+	"github.com/willdot/uGit/app/pkg/run"
 )
 
 // Status will run git status and return the result

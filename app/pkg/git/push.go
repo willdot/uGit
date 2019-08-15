@@ -1,6 +1,6 @@
 package git
 
-import "uGit/app/pkg/run"
+import "github.com/willdot/uGit/app/pkg/run"
 
 // Push will run a git push command and return the result
 func Push(commander run.ICommander) (string, error) {

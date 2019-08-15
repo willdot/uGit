@@ -1,7 +1,7 @@
 package main
 
 import (
-	root "uGit/app/cmd"
+	root "github.com/willdot/uGit/app/cmd"
 )
 
 func main() {

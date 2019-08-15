@@ -1,6 +1,6 @@
 package git
 
-import "uGit/app/pkg/run"
+import "github.com/willdot/uGit/app/pkg/run"
 
 // DeleteBranch will run git delete for a branch
 func DeleteBranch(commander run.ICommander) (string, error) {

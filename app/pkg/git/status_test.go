@@ -177,7 +177,7 @@ new file:   a.txt
 new file:   b.txt
 
 `
-var notStagedForCommit = ` On branch master
+var notStagedForCommit = `On branch master
 Changes to be committed:
   (use "git reset HEAD <file>..." to unstage)
 

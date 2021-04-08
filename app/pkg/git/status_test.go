@@ -80,6 +80,13 @@ func TestGetFilesToBeCommitted(t *testing.T) {
 	assertSlice(t, got, want)
 }
 
+func TestChangesNotStagedForCommit(t *testing.T) {
+	want := []string{"modified:   something.go", "modified:   something/something.go"}
+
+	got := GetNotStagedFiles(changesNotStagedForCommit)
+	assertSlice(t, got, want)
+}
+
 func assertSlice(t *testing.T, got, want []string) {
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %v want %v", got, want)
@@ -201,4 +208,13 @@ Changes not staged for commit:
         modified:   New folder/as
         modified:   pp/ppp
 
+`
+var changesNotStagedForCommit = `On branch fixStatus
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+		modified:   something.go
+		modified:   something/something.go
+
+no changes added to commit (use "git add" and/or "git commit -a")
 `

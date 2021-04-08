@@ -33,7 +33,6 @@ func GetFilesOrNothingToCommit(s string) ([]string, bool) {
 			return nil, true
 		}
 	}
-
 	return result, false
 }
 
@@ -67,7 +66,6 @@ func GetNotStagedFiles(s string) []string {
 	splitLines := strings.Split(s, "\n")
 
 	var result []string
-
 	for i := 0; i < len(splitLines); i++ {
 		line := strings.TrimSpace(splitLines[i])
 
@@ -81,6 +79,9 @@ func GetNotStagedFiles(s string) []string {
 			for j := 3; j < len(notStagedLines); j++ {
 				line = strings.TrimSpace(notStagedLines[j])
 
+				if strings.Contains(line, "no changes added to commit") {
+					continue
+				}
 				if line == "" {
 					if initialBlankLine == false {
 						initialBlankLine = true
@@ -95,7 +96,6 @@ func GetNotStagedFiles(s string) []string {
 			break
 		}
 	}
-
 	return result
 }
 
@@ -132,6 +132,5 @@ func GetFilesToBeCommitted(s string) []string {
 			break
 		}
 	}
-
 	return result
 }

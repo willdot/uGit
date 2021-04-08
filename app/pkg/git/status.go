@@ -1,6 +1,7 @@
 package git
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/willdot/uGit/app/pkg/run"
@@ -33,6 +34,9 @@ func GetFilesOrNothingToCommit(s string) ([]string, bool) {
 			return nil, true
 		}
 	}
+
+	fmt.Println("GetFilesOrNothingToCommit")
+	fmt.Println(result)
 
 	return result, false
 }
@@ -67,7 +71,6 @@ func GetNotStagedFiles(s string) []string {
 	splitLines := strings.Split(s, "\n")
 
 	var result []string
-
 	for i := 0; i < len(splitLines); i++ {
 		line := strings.TrimSpace(splitLines[i])
 
@@ -81,6 +84,9 @@ func GetNotStagedFiles(s string) []string {
 			for j := 3; j < len(notStagedLines); j++ {
 				line = strings.TrimSpace(notStagedLines[j])
 
+				if strings.Contains(line, "no changes added to commit") {
+					continue
+				}
 				if line == "" {
 					if initialBlankLine == false {
 						initialBlankLine = true
@@ -95,6 +101,9 @@ func GetNotStagedFiles(s string) []string {
 			break
 		}
 	}
+
+	fmt.Println("GetNotStagedFiles")
+	fmt.Println(result)
 
 	return result
 }
@@ -132,6 +141,9 @@ func GetFilesToBeCommitted(s string) []string {
 			break
 		}
 	}
+
+	fmt.Println("GetFilesToBeCommited")
+	fmt.Println(result)
 
 	return result
 }

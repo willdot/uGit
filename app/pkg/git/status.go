@@ -1,7 +1,6 @@
 package git
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/willdot/uGit/app/pkg/run"
@@ -34,10 +33,6 @@ func GetFilesOrNothingToCommit(s string) ([]string, bool) {
 			return nil, true
 		}
 	}
-
-	fmt.Println("GetFilesOrNothingToCommit")
-	fmt.Println(result)
-
 	return result, false
 }
 
@@ -101,10 +96,6 @@ func GetNotStagedFiles(s string) []string {
 			break
 		}
 	}
-
-	fmt.Println("GetNotStagedFiles")
-	fmt.Println(result)
-
 	return result
 }
 
@@ -141,9 +132,5 @@ func GetFilesToBeCommitted(s string) []string {
 			break
 		}
 	}
-
-	fmt.Println("GetFilesToBeCommited")
-	fmt.Println(result)
-
 	return result
 }

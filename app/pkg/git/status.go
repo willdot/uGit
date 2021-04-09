@@ -82,6 +82,15 @@ func GetNotStagedFiles(s string) []string {
 				if strings.Contains(line, "no changes added to commit") {
 					continue
 				}
+
+				if strings.Contains(line, "Changes not staged for commit:") {
+					continue
+				}
+
+				if strings.Contains(line, "Untracked files") {
+					break
+				}
+
 				if line == "" {
 					if initialBlankLine == false {
 						initialBlankLine = true

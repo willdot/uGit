@@ -131,8 +131,6 @@ func askUserToSelectOptions(availableOptions []string, message string, addSelect
 		for _, v := range m.selected {
 
 			if v == "**Select all**" {
-				fmt.Println("1")
-				fmt.Println(availableOptions)
 				return availableOptions
 			}
 			if v == "**Exit and ignore selections**" {
@@ -142,8 +140,6 @@ func askUserToSelectOptions(availableOptions []string, message string, addSelect
 			results = append(results, v)
 		}
 	}
-	fmt.Println("2")
-	fmt.Println(results)
 
 	return results
 }

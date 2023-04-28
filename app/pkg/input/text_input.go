@@ -38,6 +38,8 @@ func (m TextInputModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyCtrlC, tea.KeyEsc:
 			m.TextInput.SetValue("")
 			return m, tea.Quit
+		case tea.KeyEnter:
+			return m, tea.Quit
 		}
 	case error:
 		m.Err = msg

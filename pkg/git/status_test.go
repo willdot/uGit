@@ -5,21 +5,6 @@ import (
 	"testing"
 )
 
-// func TestStatus(t *testing.T) {
-
-// 	want := "something"
-
-// 	fake := &FakeCommander{
-// 		Result: want,
-// 	}
-
-// 	got, _ := Status(fake)
-
-// 	if got != want {
-// 		t.Errorf("want '%s' but got '%s'", want, got)
-// 	}
-// }
-
 func TestGetTrackedFiles(t *testing.T) {
 	want := []string{"something/something.go", "something/else.go", "Some folder/"}
 

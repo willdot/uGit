@@ -16,12 +16,6 @@ var deleteCmd = &cobra.Command{
 	Use:   "d",
 	Short: "Delete branches",
 	Run: func(cmd *cobra.Command, args []string) {
-
-		// branchCommander := run.Commander{
-		// 	Command: "git",
-		// 	Args:    []string{"branch"},
-		// }
-
 		branches, err := git.GetBranches()
 		if err != nil {
 			fmt.Printf("error: %v", errors.WithMessage(err, ""))
@@ -48,13 +42,6 @@ func init() {
 }
 
 func deleteBranch(branch string) string {
-
-	// deleteCommander := run.Commander{
-	// 	Command: "git",
-	// 	Args:    []string{"branch", "-d", branch},
-	// }
-
-	// result, err := git.DeleteBranch(deleteCommander)
 	result, err := run.RunCommand("git", []string{"branch", "-d", branch})
 	if err != nil {
 		handleErrorDelete(result, branch)
@@ -65,12 +52,6 @@ func deleteBranch(branch string) string {
 }
 
 func forceDeleteBranch(branch string) {
-	// deleteCommander := run.Commander{
-	// 	Command: "git",
-	// 	Args:    []string{"branch", "-D", branch},
-	// }
-
-	// result, _ := git.DeleteBranch(deleteCommander)
 	result, err := run.RunCommand("git", []string{"branch", "-D", branch})
 	if err != nil {
 		fmt.Println(err)

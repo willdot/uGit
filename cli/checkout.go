@@ -81,12 +81,6 @@ func checkout(branchSelection string, new bool) {
 
 	args = append(args, strings.TrimSpace(branchSelection))
 
-	// checkoutCommander := run.Commander{
-	// 	Command: "git",
-	// 	Args:    args,
-	// }
-
-	// result, err := git.CheckoutBranch(checkoutCommander)
 	result, err := run.RunCommand("git", args)
 	if err != nil {
 		fmt.Printf("error: %v", errors.WithMessage(err, ""))

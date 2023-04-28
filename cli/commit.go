@@ -42,7 +42,6 @@ var commitCmd = &cobra.Command{
 		if pushFlag {
 			push()
 		}
-
 	},
 }
 
@@ -68,13 +67,6 @@ func workOutFilesToBeCommitted() {
 }
 
 func getStatus() string {
-	// untrackedFilesCommander := run.Commander{
-	// 	Command: "git",
-	// 	Args:    []string{"status"},
-	// }
-
-	// status, err := git.Status(untrackedFilesCommander)
-
 	status, err := run.RunCommand("git", []string{"status"})
 
 	if err != nil {
@@ -123,13 +115,6 @@ func addFiles(filesToAdd []string) {
 
 		printSelectedFiles(filesToAdd)
 
-		// addFilesCommander := run.Commander{
-		// 	Command: "git",
-		// 	Args:    append([]string{"add"}, filesToAdd...),
-		// }
-
-		// _, err := git.Add(addFilesCommander)
-
 		_, err := run.RunCommand("git", append([]string{"add"}, filesToAdd...))
 
 		if err != nil {
@@ -165,13 +150,6 @@ func commit() {
 		os.Exit(1)
 	}
 
-	// commitCommander := run.Commander{
-	// 	Command: "git",
-	// 	Args:    []string{"commit", "-m", commitMessage},
-	// }
-
-	// commitResult, err := git.CommitChanges(commitCommander)
-
 	commitResult, err := run.RunCommand("git", []string{"commit", "-m", commitMessage})
 
 	if err != nil {
@@ -183,13 +161,6 @@ func commit() {
 }
 
 func push() {
-	// pushCommander := run.Commander{
-	// 	Command: "git",
-	// 	Args:    []string{"push"},
-	// }
-
-	// result, err := git.Push(pushCommander)
-
 	result, err := run.RunCommand("git", []string{"push"})
 
 	if err != nil {
@@ -202,12 +173,7 @@ func push() {
 func pushSetUpstream(command string) {
 
 	args := strings.Split(strings.TrimSpace(command), " ")
-	// pushCommander := run.Commander{
-	// 	Command: "git",
-	// 	Args:    args[1:],
-	// }
 
-	// result, _ := git.Push(pushCommander)
 	result, err := run.RunCommand("git", args[1:])
 	if err != nil {
 		fmt.Println(err)

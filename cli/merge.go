@@ -16,11 +16,6 @@ var mergeCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		var branchName string
 
-		// branchCommander := run.Commander{
-		// 	Command: "git",
-		// 	Args:    []string{"branch", "-a"},
-		// }
-
 		branches, err := git.GetBranches()
 
 		if err != nil {
@@ -42,12 +37,6 @@ func merge(branchSelection string) {
 
 	args := []string{"merge", strings.TrimSpace(branchSelection)}
 
-	// mergeCommander := run.Commander{
-	// 	Command: "git",
-	// 	Args:    args,
-	// }
-
-	// result, err := git.Merge(mergeCommander)
 	result, err := run.RunCommand("git", args)
 	if err != nil {
 		fmt.Printf("error: %v", errors.WithMessage(err, ""))
@@ -58,8 +47,4 @@ func merge(branchSelection string) {
 
 func init() {
 	rootCmd.AddCommand(mergeCmd)
-}
-
-func something() {
-
 }

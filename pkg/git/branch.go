@@ -84,14 +84,6 @@ func RemoveOriginHead(branches *[]string) {
 	*branches = result
 }
 
-// // CheckoutBranch checks out a branch
-// func CheckoutBranch(commander run.ICommander) (string, error) {
-
-// 	result, err := commander.CommandWithResult()
-
-// 	return string(result), err
-// }
-
 // RemoveRemoteOriginFromName removes the remotes/origin part of the branch
 func RemoveRemoteOriginFromName(branch *string) {
 

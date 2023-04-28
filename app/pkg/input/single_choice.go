@@ -43,8 +43,6 @@ func (m SingleChoiceModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m SingleChoiceModel) View() string {
 	s := strings.Builder{}
-	s.WriteString("What kind of Bubble Tea would you like to order?\n\n")
-
 	for i := 0; i < len(m.choices); i++ {
 		if m.cursor == i {
 			s.WriteString("(•) ")

@@ -62,6 +62,9 @@ var checkoutCmd = &cobra.Command{
 		}
 
 		branchName := askUserToSelectSingleOption(branches)
+		if branchName == "" {
+			return
+		}
 
 		checkout(branchName, newBranchFlag)
 	},

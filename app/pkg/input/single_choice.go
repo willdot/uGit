@@ -30,9 +30,8 @@ func (m SingleChoiceModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.cursor < len(m.choices)-1 {
 				m.cursor++
 			}
-		case " ":
-			m.Selected = m.choices[m.cursor]
 		case "enter":
+			m.Selected = m.choices[m.cursor]
 			return m, tea.Quit
 		}
 	default:

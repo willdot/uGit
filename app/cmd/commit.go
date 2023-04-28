@@ -230,20 +230,6 @@ func handleErrorPush(errorMessage string) {
 	}
 }
 
-func getCommitQuestion() []*survey.Question {
-	var commitQuestion = []*survey.Question{
-		{
-			Name: "commit",
-			Prompt: &survey.Input{
-				Message: `Enter a commit message or type "exit" to cancel`,
-			},
-			Validate: survey.Required,
-		},
-	}
-
-	return commitQuestion
-}
-
 func init() {
 	rootCmd.AddCommand(commitCmd)
 	commitCmd.Flags().BoolVarP(&pushFlag, "push", "p", false, "push after commit")

@@ -12,7 +12,6 @@ import (
 	"github.com/willdot/uGit/app/pkg/git"
 	"github.com/willdot/uGit/app/pkg/input"
 	"github.com/willdot/uGit/app/pkg/run"
-	survey "gopkg.in/AlecAivazis/survey.v1"
 )
 
 var pushFlag bool
@@ -213,11 +212,16 @@ func handleErrorPush(errorMessage string) {
 
 			result := false
 
-			prompt := &survey.Confirm{
-				Message: "Would you like to set remote as upstream?",
+			res := askUserToSelectSingleOption([]string{"yes", "no"})
+			if res == "yes" {
+				result = true
 			}
 
-			survey.AskOne(prompt, &result, nil)
+			// prompt := &survey.Confirm{
+			// 	Message: "Would you like to set remote as upstream?",
+			// }
+
+			// survey.AskOne(prompt, &result, nil)
 
 			if !result {
 				return

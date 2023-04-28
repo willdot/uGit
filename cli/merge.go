@@ -59,3 +59,7 @@ func merge(branchSelection string) {
 func init() {
 	rootCmd.AddCommand(mergeCmd)
 }
+
+func something() {
+
+}

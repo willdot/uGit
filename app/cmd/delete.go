@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/willdot/uGit/app/pkg/git"
 	"github.com/willdot/uGit/app/pkg/run"
-	survey "gopkg.in/AlecAivazis/survey.v1"
+	//survey "gopkg.in/AlecAivazis/survey.v1"
 )
 
 // deleteCmd represents the delete command
@@ -85,11 +85,15 @@ func handleErrorDelete(errorMessage, branchName string) {
 		fmt.Println(lines[0])
 		result := false
 
-		prompt := &survey.Confirm{
-			Message: "Would you like to force delete this branch?",
+		res := askUserToSelectSingleOption([]string{"yes", "no"}, "Would you like to force delete this branch?")
+
+		if res == "" {
+			return
 		}
 
-		survey.AskOne(prompt, &result, nil)
+		if res == "yes" {
+			result = true
+		}
 
 		if result == true {
 			forceDeleteBranch(branchName)

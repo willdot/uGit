@@ -2,14 +2,16 @@ package root
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/willdot/uGit/app/pkg/git"
+	"github.com/willdot/uGit/app/pkg/input"
 	"github.com/willdot/uGit/app/pkg/run"
-	survey "gopkg.in/AlecAivazis/survey.v1"
 )
 
 var pushFlag bool
@@ -134,12 +136,23 @@ func addFiles(filesToAdd []string) {
 }
 
 func commit() {
-	commitMessage := ""
+	p := tea.NewProgram(input.InitialTextInputModel("enter commit message"))
+	model, err := p.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	commitQ := getCommitQuestion()
-	err := survey.Ask(commitQ, &commitMessage)
+	m, ok := model.(input.TextInputModel)
+	if !ok {
+		return
+	}
+	if m.Err != nil {
+		fmt.Printf("error: %s\n", m.Err)
+		return
+	}
 
-	if commitMessage == "exit" {
+	commitMessage := m.TextInput.Value()
+	if commitMessage == "" {
 		return
 	}
 
@@ -199,11 +212,10 @@ func handleErrorPush(errorMessage string) {
 
 			result := false
 
-			prompt := &survey.Confirm{
-				Message: "Would you like to set remote as upstream?",
+			res := askUserToSelectSingleOption([]string{"yes", "no"}, "Would you like to set remote as upstream?")
+			if res == "yes" {
+				result = true
 			}
-
-			survey.AskOne(prompt, &result, nil)
 
 			if !result {
 				return
@@ -214,20 +226,6 @@ func handleErrorPush(errorMessage string) {
 			pushSetUpstream(line)
 		}
 	}
-}
-
-func getCommitQuestion() []*survey.Question {
-	var commitQuestion = []*survey.Question{
-		{
-			Name: "commit",
-			Prompt: &survey.Input{
-				Message: `Enter a commit message or type "exit" to cancel`,
-			},
-			Validate: survey.Required,
-		},
-	}
-
-	return commitQuestion
 }
 
 func init() {

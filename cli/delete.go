@@ -1,4 +1,4 @@
-package root
+package cli
 
 import (
 	"fmt"
@@ -7,9 +7,8 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"github.com/willdot/uGit/app/pkg/git"
-	"github.com/willdot/uGit/app/pkg/run"
-	//survey "gopkg.in/AlecAivazis/survey.v1"
+	"github.com/willdot/uGit/pkg/git"
+	"github.com/willdot/uGit/pkg/run"
 )
 
 // deleteCmd represents the delete command
@@ -18,13 +17,12 @@ var deleteCmd = &cobra.Command{
 	Short: "Delete branches",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		branchCommander := run.Commander{
-			Command: "git",
-			Args:    []string{"branch"},
-		}
+		// branchCommander := run.Commander{
+		// 	Command: "git",
+		// 	Args:    []string{"branch"},
+		// }
 
-		branches, err := git.GetBranches(branchCommander)
-
+		branches, err := git.GetBranches()
 		if err != nil {
 			fmt.Printf("error: %v", errors.WithMessage(err, ""))
 			return
@@ -51,13 +49,13 @@ func init() {
 
 func deleteBranch(branch string) string {
 
-	deleteCommander := run.Commander{
-		Command: "git",
-		Args:    []string{"branch", "-d", branch},
-	}
+	// deleteCommander := run.Commander{
+	// 	Command: "git",
+	// 	Args:    []string{"branch", "-d", branch},
+	// }
 
-	result, err := git.DeleteBranch(deleteCommander)
-
+	// result, err := git.DeleteBranch(deleteCommander)
+	result, err := run.RunCommand("git", []string{"branch", "-d", branch})
 	if err != nil {
 		handleErrorDelete(result, branch)
 		return ""
@@ -67,12 +65,17 @@ func deleteBranch(branch string) string {
 }
 
 func forceDeleteBranch(branch string) {
-	deleteCommander := run.Commander{
-		Command: "git",
-		Args:    []string{"branch", "-D", branch},
-	}
+	// deleteCommander := run.Commander{
+	// 	Command: "git",
+	// 	Args:    []string{"branch", "-D", branch},
+	// }
 
-	result, _ := git.DeleteBranch(deleteCommander)
+	// result, _ := git.DeleteBranch(deleteCommander)
+	result, err := run.RunCommand("git", []string{"branch", "-D", branch})
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	fmt.Println(result)
 }
 

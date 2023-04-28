@@ -2,7 +2,6 @@ package git
 
 import (
 	"reflect"
-	"strings"
 	"testing"
 )
 
@@ -89,53 +88,6 @@ func TestGetCurrentBranch(t *testing.T) {
 		}
 	})
 
-}
-
-func TestGetBranches(t *testing.T) {
-	t.Run("get local branches", func(t *testing.T) {
-		want := []string{}
-
-		fake := &FakeCommander{
-			ResultString: []string(want),
-		}
-
-		got, _ := GetBranches(fake)
-
-		if len(got) != len(want) {
-			t.Errorf("want '%s' but got '%s'", got, want)
-		}
-	})
-}
-
-func TestCheckout(t *testing.T) {
-
-	t.Run("switched branch", func(t *testing.T) {
-		want := "Switched to branch 'fake'"
-
-		fake := &FakeCommander{
-			Result: want,
-		}
-
-		got, _ := CheckoutBranch(fake)
-
-		if !strings.Contains(got, want) {
-			t.Errorf("wanted '%s' but got '%s'", want, got)
-		}
-	})
-
-	t.Run("branch doesn't exist", func(t *testing.T) {
-		want := ErrBranchDoesNotExist
-
-		fake := &FakeCommander{
-			Err: ErrBranchDoesNotExist,
-		}
-
-		_, got := CheckoutBranch(fake)
-
-		if got != want {
-			t.Errorf("wanted '%s' but got '%s'", want, got)
-		}
-	})
 }
 
 func TestRemoveRemoteOriginFromName(t *testing.T) {

@@ -1,9 +1,9 @@
 package main
 
 import (
-	root "github.com/willdot/uGit/app/cmd"
+	"github.com/willdot/uGit/cli"
 )
 
 func main() {
-	root.Execute()
+	cli.Execute()
 }

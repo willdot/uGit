@@ -1,4 +1,4 @@
-package root
+package cli
 
 import (
 	"fmt"
@@ -9,9 +9,9 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"github.com/willdot/uGit/app/pkg/git"
-	"github.com/willdot/uGit/app/pkg/input"
-	"github.com/willdot/uGit/app/pkg/run"
+	"github.com/willdot/uGit/pkg/git"
+	"github.com/willdot/uGit/pkg/input"
+	"github.com/willdot/uGit/pkg/run"
 )
 
 var pushFlag bool
@@ -68,12 +68,14 @@ func workOutFilesToBeCommitted() {
 }
 
 func getStatus() string {
-	untrackedFilesCommander := run.Commander{
-		Command: "git",
-		Args:    []string{"status"},
-	}
+	// untrackedFilesCommander := run.Commander{
+	// 	Command: "git",
+	// 	Args:    []string{"status"},
+	// }
 
-	status, err := git.Status(untrackedFilesCommander)
+	// status, err := git.Status(untrackedFilesCommander)
+
+	status, err := run.RunCommand("git", []string{"status"})
 
 	if err != nil {
 		fmt.Printf("error: %v", errors.WithMessage(err, ""))
@@ -121,12 +123,14 @@ func addFiles(filesToAdd []string) {
 
 		printSelectedFiles(filesToAdd)
 
-		addFilesCommander := run.Commander{
-			Command: "git",
-			Args:    append([]string{"add"}, filesToAdd...),
-		}
+		// addFilesCommander := run.Commander{
+		// 	Command: "git",
+		// 	Args:    append([]string{"add"}, filesToAdd...),
+		// }
 
-		_, err := git.Add(addFilesCommander)
+		// _, err := git.Add(addFilesCommander)
+
+		_, err := run.RunCommand("git", append([]string{"add"}, filesToAdd...))
 
 		if err != nil {
 			fmt.Printf("Prompt failed %v\n", err)
@@ -161,12 +165,14 @@ func commit() {
 		os.Exit(1)
 	}
 
-	commitCommander := run.Commander{
-		Command: "git",
-		Args:    []string{"commit", "-m", commitMessage},
-	}
+	// commitCommander := run.Commander{
+	// 	Command: "git",
+	// 	Args:    []string{"commit", "-m", commitMessage},
+	// }
 
-	commitResult, err := git.CommitChanges(commitCommander)
+	// commitResult, err := git.CommitChanges(commitCommander)
+
+	commitResult, err := run.RunCommand("git", []string{"commit", "-m", commitMessage})
 
 	if err != nil {
 		fmt.Printf("error: %v", errors.WithMessage(err, ""))
@@ -177,12 +183,14 @@ func commit() {
 }
 
 func push() {
-	pushCommander := run.Commander{
-		Command: "git",
-		Args:    []string{"push"},
-	}
+	// pushCommander := run.Commander{
+	// 	Command: "git",
+	// 	Args:    []string{"push"},
+	// }
 
-	result, err := git.Push(pushCommander)
+	// result, err := git.Push(pushCommander)
+
+	result, err := run.RunCommand("git", []string{"push"})
 
 	if err != nil {
 		handleErrorPush(result)
@@ -194,12 +202,18 @@ func push() {
 func pushSetUpstream(command string) {
 
 	args := strings.Split(strings.TrimSpace(command), " ")
-	pushCommander := run.Commander{
-		Command: "git",
-		Args:    args[1:],
+	// pushCommander := run.Commander{
+	// 	Command: "git",
+	// 	Args:    args[1:],
+	// }
+
+	// result, _ := git.Push(pushCommander)
+	result, err := run.RunCommand("git", args[1:])
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 
-	result, _ := git.Push(pushCommander)
 	fmt.Println(result)
 }
 

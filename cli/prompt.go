@@ -1,11 +1,11 @@
-package root
+package cli
 
 import (
 	"fmt"
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/willdot/uGit/app/pkg/input"
+	"github.com/willdot/uGit/pkg/input"
 )
 
 func askUserToSelectOptions(availableOptions []string, message string, addSelectAll bool) []string {

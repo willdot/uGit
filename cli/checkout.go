@@ -1,4 +1,4 @@
-package root
+package cli
 
 import (
 	"fmt"
@@ -8,9 +8,9 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"github.com/willdot/uGit/app/pkg/git"
-	"github.com/willdot/uGit/app/pkg/input"
-	"github.com/willdot/uGit/app/pkg/run"
+	"github.com/willdot/uGit/pkg/git"
+	"github.com/willdot/uGit/pkg/input"
+	"github.com/willdot/uGit/pkg/run"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -49,15 +49,9 @@ var checkoutCmd = &cobra.Command{
 			return
 		}
 
-		branchCommander := run.Commander{
-			Command: "git",
-			Args:    []string{"branch", "-a"},
-		}
-
-		branches, err := git.GetBranches(branchCommander)
-
+		branches, err := git.GetBranches()
 		if err != nil {
-			fmt.Printf("error: %v", errors.WithMessage(err, ""))
+			fmt.Println(err)
 			return
 		}
 
@@ -87,13 +81,13 @@ func checkout(branchSelection string, new bool) {
 
 	args = append(args, strings.TrimSpace(branchSelection))
 
-	checkoutCommander := run.Commander{
-		Command: "git",
-		Args:    args,
-	}
+	// checkoutCommander := run.Commander{
+	// 	Command: "git",
+	// 	Args:    args,
+	// }
 
-	result, err := git.CheckoutBranch(checkoutCommander)
-
+	// result, err := git.CheckoutBranch(checkoutCommander)
+	result, err := run.RunCommand("git", args)
 	if err != nil {
 		fmt.Printf("error: %v", errors.WithMessage(err, ""))
 	}

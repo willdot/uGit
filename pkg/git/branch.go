@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/willdot/uGit/app/pkg/run"
+	"github.com/willdot/uGit/pkg/run"
 )
 
 // ErrNoCurrentBranchFound is an error returned when the input branches doesn't contain a current branch indicator
@@ -40,16 +40,19 @@ func GetCurrentBranch(branches []string) (string, error) {
 	return "", ErrNoCurrentBranchFound
 }
 
-// GetBranches gets all local branches
-func GetBranches(commander run.ICommander) ([]string, error) {
-	result, err := commander.CommandWithResult()
+// // GetBranches gets all local branches
+func GetBranches() ([]string, error) {
+	result, err := run.RunCommand("git", []string{"branch", "-a"})
+	if err != nil {
+		return nil, err
+	}
 
 	branches := SplitBranches(result, true)
 
 	return branches, err
 }
 
-//RemoveCurrentBranch will remove the current branch from a list of branches
+// RemoveCurrentBranch will remove the current branch from a list of branches
 func RemoveCurrentBranch(branches *[]string) {
 
 	var result []string
@@ -66,7 +69,7 @@ func RemoveCurrentBranch(branches *[]string) {
 	*branches = result
 }
 
-//RemoveOriginHead will remove a the head branch
+// RemoveOriginHead will remove a the head branch
 func RemoveOriginHead(branches *[]string) {
 	var result []string
 
@@ -81,13 +84,13 @@ func RemoveOriginHead(branches *[]string) {
 	*branches = result
 }
 
-// CheckoutBranch checks out a branch
-func CheckoutBranch(commander run.ICommander) (string, error) {
+// // CheckoutBranch checks out a branch
+// func CheckoutBranch(commander run.ICommander) (string, error) {
 
-	result, err := commander.CommandWithResult()
+// 	result, err := commander.CommandWithResult()
 
-	return string(result), err
-}
+// 	return string(result), err
+// }
 
 // RemoveRemoteOriginFromName removes the remotes/origin part of the branch
 func RemoveRemoteOriginFromName(branch *string) {

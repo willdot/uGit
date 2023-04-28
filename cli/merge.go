@@ -1,4 +1,4 @@
-package root
+package cli
 
 import (
 	"fmt"
@@ -6,8 +6,8 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"github.com/willdot/uGit/app/pkg/git"
-	"github.com/willdot/uGit/app/pkg/run"
+	"github.com/willdot/uGit/pkg/git"
+	"github.com/willdot/uGit/pkg/run"
 )
 
 var mergeCmd = &cobra.Command{
@@ -16,12 +16,12 @@ var mergeCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		var branchName string
 
-		branchCommander := run.Commander{
-			Command: "git",
-			Args:    []string{"branch", "-a"},
-		}
+		// branchCommander := run.Commander{
+		// 	Command: "git",
+		// 	Args:    []string{"branch", "-a"},
+		// }
 
-		branches, err := git.GetBranches(branchCommander)
+		branches, err := git.GetBranches()
 
 		if err != nil {
 			fmt.Printf("error: %v", errors.WithMessage(err, ""))
@@ -42,13 +42,13 @@ func merge(branchSelection string) {
 
 	args := []string{"merge", strings.TrimSpace(branchSelection)}
 
-	mergeCommander := run.Commander{
-		Command: "git",
-		Args:    args,
-	}
+	// mergeCommander := run.Commander{
+	// 	Command: "git",
+	// 	Args:    args,
+	// }
 
-	result, err := git.Merge(mergeCommander)
-
+	// result, err := git.Merge(mergeCommander)
+	result, err := run.RunCommand("git", args)
 	if err != nil {
 		fmt.Printf("error: %v", errors.WithMessage(err, ""))
 	}

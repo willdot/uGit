@@ -28,7 +28,7 @@ var mergeCmd = &cobra.Command{
 			return
 		}
 
-		branchName = askUserToSelectSingleOption(branches)
+		branchName = askUserToSelectSingleOption(branches, "")
 		if branchName == "" {
 			return
 		}

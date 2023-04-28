@@ -1,6 +1,7 @@
 package input
 
 import (
+	"fmt"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -10,6 +11,7 @@ type SingleChoiceModel struct {
 	choices  []string
 	cursor   int
 	Selected string
+	message  string
 }
 
 func (m SingleChoiceModel) Init() tea.Cmd {
@@ -42,6 +44,11 @@ func (m SingleChoiceModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m SingleChoiceModel) View() string {
 	s := strings.Builder{}
+
+	if m.message != "" {
+		s.Write([]byte(fmt.Sprintf("%s\n", m.message)))
+	}
+
 	for i := 0; i < len(m.choices); i++ {
 		if m.cursor == i {
 			s.WriteString("(•) ")
@@ -56,8 +63,9 @@ func (m SingleChoiceModel) View() string {
 	return s.String()
 }
 
-func InitSingleChoiceModel(choices []string) SingleChoiceModel {
+func InitSingleChoiceModel(choices []string, message string) SingleChoiceModel {
 	return SingleChoiceModel{
 		choices: choices,
+		message: message,
 	}
 }

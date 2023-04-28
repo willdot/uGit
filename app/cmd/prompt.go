@@ -47,8 +47,8 @@ func askUserToSelectOptions(availableOptions []string, message string, addSelect
 	return results
 }
 
-func askUserToSelectSingleOption(availableOptions []string) string {
-	p := tea.NewProgram(input.InitSingleChoiceModel(availableOptions))
+func askUserToSelectSingleOption(availableOptions []string, message string) string {
+	p := tea.NewProgram(input.InitSingleChoiceModel(availableOptions, message))
 
 	// Run returns the model as a tea.Model.
 	model, err := p.Run()

@@ -212,16 +212,10 @@ func handleErrorPush(errorMessage string) {
 
 			result := false
 
-			res := askUserToSelectSingleOption([]string{"yes", "no"})
+			res := askUserToSelectSingleOption([]string{"yes", "no"}, "Would you like to set remote as upstream?")
 			if res == "yes" {
 				result = true
 			}
-
-			// prompt := &survey.Confirm{
-			// 	Message: "Would you like to set remote as upstream?",
-			// }
-
-			// survey.AskOne(prompt, &result, nil)
 
 			if !result {
 				return

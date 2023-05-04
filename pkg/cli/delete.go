@@ -11,34 +11,33 @@ import (
 	"github.com/willdot/uGit/pkg/run"
 )
 
-// deleteCmd represents the delete command
-var deleteCmd = &cobra.Command{
-	Use:   "d",
-	Short: "Delete branches",
-	Run: func(cmd *cobra.Command, args []string) {
-		branches, err := git.GetBranches()
-		if err != nil {
-			fmt.Printf("error: %v", errors.WithMessage(err, ""))
-			return
-		}
+func DeleteCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "d",
+		Short: "Delete branches",
+		Run: func(cmd *cobra.Command, args []string) {
+			branches, err := git.GetBranches()
+			if err != nil {
+				fmt.Printf("error: %v", errors.WithMessage(err, ""))
+				return
+			}
 
-		branchesToDelete := askUserToSelectOptions(branches, "Select branches to delete", false)
+			branchesToDelete := askUserToSelectOptions(branches, "Select branches to delete", false)
 
-		if len(branchesToDelete) == 0 {
-			fmt.Println("No branches selected")
-			os.Exit(1)
-		}
+			if len(branchesToDelete) == 0 {
+				fmt.Println("No branches selected")
+				os.Exit(1)
+			}
 
-		for _, branch := range branchesToDelete {
-			result := deleteBranch(strings.TrimSpace(branch))
+			for _, branch := range branchesToDelete {
+				result := deleteBranch(strings.TrimSpace(branch))
 
-			fmt.Println(result)
-		}
-	},
-}
+				fmt.Println(result)
+			}
+		},
+	}
 
-func init() {
-	rootCmd.AddCommand(deleteCmd)
+	return cmd
 }
 
 func deleteBranch(branch string) string {

@@ -6,7 +6,6 @@ import (
 
 // GetFilesOrNothingToCommit will return a slice of files that aren't tracked and if there is nothing to commit, a true flag
 func GetFilesOrNothingToCommit(s string) ([]string, bool) {
-
 	x := strings.Split(s, "\n")
 
 	var result []string

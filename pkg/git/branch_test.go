@@ -96,7 +96,7 @@ func TestRemoveRemoteOriginFromName(t *testing.T) {
 
 		want := "master"
 
-		RemoveRemoteOriginFromName(&input)
+		input = RemoveRemoteOriginFromName(input)
 
 		if input != want {
 			t.Errorf("want %s but got %s", want, input)
@@ -109,7 +109,7 @@ func TestRemoveRemoteOriginFromName(t *testing.T) {
 
 		want := "bug/origins"
 
-		RemoveRemoteOriginFromName(&input)
+		input = RemoveRemoteOriginFromName(input)
 
 		if input != want {
 			t.Errorf("want %s but got %s", want, input)

@@ -16,43 +16,55 @@ import (
 
 var pushFlag bool
 
-var commitCmd = &cobra.Command{
-	Use:   "com",
-	Short: "Commit changes",
-	Run: func(cmd *cobra.Command, args []string) {
+func CommitCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "com",
+		Short: "Commit changes",
+		Run: func(cmd *cobra.Command, args []string) {
+			commit()
+		},
+	}
 
-		workOutFilesToBeCommitted()
+	cmd.Flags().BoolVarP(&pushFlag, "push", "p", false, "push after commit")
 
-		status := getStatus()
-
-		filesToBeCommitted := git.GetFilesToBeCommitted(status)
-
-		if len(filesToBeCommitted) == 0 {
-			fmt.Println("Nothing to commit")
-			return
-		}
-
-		fmt.Println("Files to be committed")
-		for _, file := range filesToBeCommitted {
-			fmt.Println(file)
-		}
-
-		commit()
-
-		if pushFlag {
-			push()
-		}
-	},
+	return cmd
 }
 
-func workOutFilesToBeCommitted() {
+func commit() {
+	filesToBeCommited := workOutFilesToBeCommitted()
+	if len(filesToBeCommited) == 0 {
+		fmt.Println("Nothing to commit")
+		return
+	}
+
+	status := getStatus()
+
+	filesToBeCommitted := git.GetFilesToBeCommitted(status)
+
+	if len(filesToBeCommitted) == 0 {
+		fmt.Println("Nothing to commit")
+		return
+	}
+
+	fmt.Println("Files to be committed")
+	for _, file := range filesToBeCommitted {
+		fmt.Println(file)
+	}
+
+	makeCommit()
+
+	if pushFlag {
+		push()
+	}
+}
+
+func workOutFilesToBeCommitted() []string {
 	status := getStatus()
 
 	untrackedFiles, nothingToCommit := git.GetFilesOrNothingToCommit(status)
 
 	if nothingToCommit {
-		fmt.Println("Nothing to commit")
-		os.Exit(1)
+		return nil
 	}
 
 	if len(untrackedFiles) > 0 {
@@ -64,6 +76,10 @@ func workOutFilesToBeCommitted() {
 	if len(notStaged) > 0 {
 		stageFiles(notStaged)
 	}
+
+	status = getStatus()
+
+	return git.GetFilesToBeCommitted(status)
 }
 
 func getStatus() string {
@@ -124,7 +140,7 @@ func addFiles(filesToAdd []string) {
 	}
 }
 
-func commit() {
+func makeCommit() error {
 	p := tea.NewProgram(input.InitialTextInputModel("enter commit message"))
 	model, err := p.Run()
 	if err != nil {
@@ -133,41 +149,41 @@ func commit() {
 
 	m, ok := model.(input.TextInputModel)
 	if !ok {
-		return
+		return nil
 	}
 	if m.Err != nil {
-		fmt.Printf("error: %s\n", m.Err)
-		return
+		return m.Err
 	}
 
 	commitMessage := m.TextInput.Value()
 	if commitMessage == "" {
-		return
+		return nil
 	}
 
 	if err != nil {
-		fmt.Printf("error: %v", errors.WithMessage(err, ""))
-		os.Exit(1)
+		return err
 	}
 
 	commitResult, err := run.RunCommand("git", []string{"commit", "-m", commitMessage})
 
 	if err != nil {
-		fmt.Printf("error: %v", errors.WithMessage(err, ""))
-		os.Exit(1)
+		return err
 	}
 
 	fmt.Println(commitResult)
+
+	return nil
 }
 
 func push() {
 	result, err := run.RunCommand("git", []string{"push"})
 
-	if err != nil {
-		handleErrorPush(result)
-	} else {
+	if err == nil {
 		fmt.Println(result)
+		return
 	}
+
+	handleErrorPush(result)
 }
 
 func pushSetUpstream(command string) {
@@ -206,9 +222,4 @@ func handleErrorPush(errorMessage string) {
 			pushSetUpstream(line)
 		}
 	}
-}
-
-func init() {
-	rootCmd.AddCommand(commitCmd)
-	commitCmd.Flags().BoolVarP(&pushFlag, "push", "p", false, "push after commit")
 }

@@ -60,7 +60,7 @@ func RemoveCurrentBranch(branches *[]string) {
 
 	for i := 0; i < len(*branches); i++ {
 		branch := (*branches)[i]
-		RemoveRemoteOriginFromName(&branch)
+		branch = RemoveRemoteOriginFromName(branch)
 		if branch != current && branch != "" && branch != strings.Trim(current, "* ") {
 			result = append(result, (*branches)[i])
 		}
@@ -75,7 +75,7 @@ func RemoveOriginHead(branches *[]string) {
 
 	for i := 0; i < len(*branches); i++ {
 		branch := (*branches)[i]
-		RemoveRemoteOriginFromName(&branch)
+		branch = RemoveRemoteOriginFromName(branch)
 		if !strings.Contains(branch, "HEAD ->") {
 			result = append(result, (*branches)[i])
 		}
@@ -85,10 +85,11 @@ func RemoveOriginHead(branches *[]string) {
 }
 
 // RemoveRemoteOriginFromName removes the remotes/origin part of the branch
-func RemoveRemoteOriginFromName(branch *string) {
-
-	if strings.Contains((*branch), "remotes/origin/") {
-		x := strings.Split(*branch, "remotes/origin/")
-		*branch = x[1]
+func RemoveRemoteOriginFromName(branch string) string {
+	if strings.Contains((branch), "remotes/origin/") {
+		x := strings.Split(branch, "remotes/origin/")
+		branch = x[1]
 	}
+
+	return branch
 }

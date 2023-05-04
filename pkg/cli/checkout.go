@@ -3,7 +3,6 @@ package cli
 import (
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -24,44 +23,10 @@ func CheckoutCommand() *cobra.Command {
 		Use:   "cko",
 		Short: "Checkout a branch",
 		Run: func(cmd *cobra.Command, args []string) {
-			if newBranchFlag {
-				p := tea.NewProgram(input.InitialTextInputModel("enter branch name"))
-				model, err := p.Run()
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				m, ok := model.(input.TextInputModel)
-				if !ok {
-					return
-				}
-				if m.Err != nil {
-					fmt.Printf("error: %s\n", m.Err)
-					return
-				}
-
-				branchName := m.TextInput.Value()
-
-				if branchName == "" {
-					os.Exit(1)
-				}
-
-				checkout(branchName, newBranchFlag)
-				return
-			}
-
-			branches, err := git.GetBranches()
+			err := checkout()
 			if err != nil {
-				fmt.Println(err)
-				return
+				log.Fatal(err)
 			}
-
-			branchName := askUserToSelectSingleOption(branches, "")
-			if branchName == "" {
-				return
-			}
-
-			checkout(branchName, newBranchFlag)
 		},
 	}
 
@@ -69,8 +34,53 @@ func CheckoutCommand() *cobra.Command {
 
 	return cmd
 }
+func checkout() error {
+	if newBranchFlag {
+		return checkoutNewBranch()
+	}
 
-func checkout(branchSelection string, new bool) {
+	branches, err := git.GetBranches()
+	if err != nil {
+		return err
+	}
+
+	branchName := askUserToSelectSingleOption(branches, "")
+	if branchName == "" {
+		return nil
+	}
+
+	performCheckout(branchName, newBranchFlag)
+
+	return nil
+}
+
+func checkoutNewBranch() error {
+	p := tea.NewProgram(input.InitialTextInputModel("enter branch name"))
+	model, err := p.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	m, ok := model.(input.TextInputModel)
+	if !ok {
+		return nil
+	}
+	if m.Err != nil {
+		return m.Err
+	}
+
+	branchName := m.TextInput.Value()
+
+	if branchName == "" {
+		return nil
+	}
+
+	performCheckout(branchName, newBranchFlag)
+	return nil
+}
+
+func performCheckout(branchSelection string, new bool) {
+
 	branchSelection = git.RemoveRemoteOriginFromName(branchSelection)
 
 	args := []string{"checkout"}

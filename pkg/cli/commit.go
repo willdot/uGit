@@ -21,7 +21,10 @@ func CommitCommand() *cobra.Command {
 		Use:   "com",
 		Short: "Commit changes",
 		Run: func(cmd *cobra.Command, args []string) {
-			commit()
+			err := commit()
+			if err != nil {
+				log.Fatal(err)
+			}
 		},
 	}
 
@@ -30,20 +33,11 @@ func CommitCommand() *cobra.Command {
 	return cmd
 }
 
-func commit() {
-	filesToBeCommited := workOutFilesToBeCommitted()
-	if len(filesToBeCommited) == 0 {
-		fmt.Println("Nothing to commit")
-		return
-	}
-
-	status := getStatus()
-
-	filesToBeCommitted := git.GetFilesToBeCommitted(status)
-
+func commit() error {
+	filesToBeCommitted := workOutFilesToBeCommitted()
 	if len(filesToBeCommitted) == 0 {
 		fmt.Println("Nothing to commit")
-		return
+		return nil
 	}
 
 	fmt.Println("Files to be committed")
@@ -51,11 +45,16 @@ func commit() {
 		fmt.Println(file)
 	}
 
-	makeCommit()
+	err := makeCommit()
+	if err != nil {
+		return err
+	}
 
 	if pushFlag {
 		push()
 	}
+
+	return nil
 }
 
 func workOutFilesToBeCommitted() []string {

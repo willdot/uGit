@@ -31,7 +31,11 @@ func merge() error {
 		return err
 	}
 
-	branchName := askUserToSelectSingleOption(branches, "")
+	branchName, err := askUserToSelectSingleOption(branches, "")
+	if err != nil {
+		return err
+	}
+
 	if branchName == "" {
 		return nil
 	}

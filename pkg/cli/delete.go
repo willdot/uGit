@@ -31,7 +31,10 @@ func delete() error {
 		return err
 	}
 
-	branchesToDelete := askUserToSelectOptions(branches, "Select branches to delete", false)
+	branchesToDelete, err := askUserToSelectOptions(branches, "Select branches to delete", false)
+	if err != nil {
+		return err
+	}
 
 	if len(branchesToDelete) == 0 {
 		fmt.Println("No branches selected")
@@ -67,7 +70,10 @@ func handleErrorDelete(err error, branchName string) {
 		fmt.Println(err)
 	}
 
-	res := askUserToSelectSingleOption([]string{"yes", "no"}, "Would you like to force delete this branch?")
+	res, err := askUserToSelectSingleOption([]string{"yes", "no"}, "Would you like to force delete this branch?")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	if res == "" {
 		return

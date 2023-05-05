@@ -71,7 +71,10 @@ func workOutFilesToBeCommitted() ([]string, error) {
 	}
 
 	if len(untrackedFiles) > 0 {
-		resolveUntrackedFiles(untrackedFiles)
+		err := resolveUntrackedFiles(untrackedFiles)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	notStaged := git.GetNotStagedFiles(status)
@@ -101,18 +104,24 @@ func getStatus() (string, error) {
 	return status, nil
 }
 
-func resolveUntrackedFiles(untrackedFiles []string) {
-	var selectedFiles []string
-
-	selectedFiles = askUserToSelectOptions(untrackedFiles, "Untracked files. Select files to add.", true)
+func resolveUntrackedFiles(untrackedFiles []string) error {
+	selectedFiles, err := askUserToSelectOptions(untrackedFiles, "Untracked files. Select files to add.", true)
+	if err != nil {
+		return err
+	}
 
 	if len(selectedFiles) > 0 {
 		addFiles(selectedFiles)
 	}
+
+	return nil
 }
 
 func stageFiles(availableFiles []string) error {
-	selectedFiles := askUserToSelectOptions(availableFiles, "Unstaged files. Select files to add.", true)
+	selectedFiles, err := askUserToSelectOptions(availableFiles, "Unstaged files. Select files to add.", true)
+	if err != nil {
+		return err
+	}
 
 	if len(selectedFiles) > 0 {
 		var filesToAdd []string
@@ -220,7 +229,10 @@ func handleErrorPush(err error) {
 
 			result := false
 
-			res := askUserToSelectSingleOption([]string{"yes", "no"}, "Would you like to set remote as upstream?")
+			res, err := askUserToSelectSingleOption([]string{"yes", "no"}, "Would you like to set remote as upstream?")
+			if err != nil {
+				log.Fatal(err)
+			}
 			if res == "yes" {
 				result = true
 			}

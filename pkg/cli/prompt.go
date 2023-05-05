@@ -1,14 +1,11 @@
 package cli
 
 import (
-	"fmt"
-	"os"
-
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/willdot/uGit/pkg/input"
 )
 
-func askUserToSelectOptions(availableOptions []string, message string, addSelectAll bool) []string {
+func askUserToSelectOptions(availableOptions []string, message string, addSelectAll bool) ([]string, error) {
 	options := make([]string, 0, len(availableOptions))
 	for _, opt := range availableOptions {
 		options = append(options, opt)
@@ -24,8 +21,7 @@ func askUserToSelectOptions(availableOptions []string, message string, addSelect
 	// Run returns the model as a tea.Model.
 	m, err := p.Run()
 	if err != nil {
-		fmt.Println("Oh no:", err)
-		os.Exit(1)
+		return nil, err
 	}
 
 	var results []string
@@ -34,34 +30,33 @@ func askUserToSelectOptions(availableOptions []string, message string, addSelect
 		for _, v := range m.Selected {
 
 			if v == "**Select all**" {
-				return availableOptions
+				return availableOptions, nil
 			}
 			if v == "**Exit and ignore selections**" {
-				return nil
+				return nil, nil
 			}
 
 			results = append(results, v)
 		}
 	}
 
-	return results
+	return results, nil
 }
 
-func askUserToSelectSingleOption(availableOptions []string, message string) string {
+func askUserToSelectSingleOption(availableOptions []string, message string) (string, error) {
 	p := tea.NewProgram(input.InitSingleChoiceModel(availableOptions, message))
 
 	// Run returns the model as a tea.Model.
 	model, err := p.Run()
 	if err != nil {
-		fmt.Println("Oh no:", err)
-		os.Exit(1)
+		return "", err
 	}
 
 	// Assert the final tea.Model to our local model and print the choice.
 	m, ok := model.(input.SingleChoiceModel)
 	if ok {
-		return m.Selected
+		return m.Selected, nil
 	}
 
-	return ""
+	return "", nil
 }

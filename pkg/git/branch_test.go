@@ -9,7 +9,7 @@ func TestSplitBranch(t *testing.T) {
 	t.Run("Split and keep current", func(t *testing.T) {
 		want := []string{"* current", "Dev", "Master"}
 
-		got := splitBranches("* current\nDev\nMaster", false)
+		got := splitBranches("* current\nDev\nMaster")
 
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %v want %v", got, want)
@@ -19,7 +19,7 @@ func TestSplitBranch(t *testing.T) {
 	t.Run("Split and remove current", func(t *testing.T) {
 		want := []string{"Dev", "Master"}
 
-		got := splitBranches("* current\n\nDev\nMaster\nremotes/origin/current", true)
+		got := splitBranches("* current\n\nDev\nMaster\nremotes/origin/current")
 
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %v want %v", got, want)
@@ -29,7 +29,7 @@ func TestSplitBranch(t *testing.T) {
 	t.Run("Split and remove origin head", func(t *testing.T) {
 		want := []string{"Dev", "Master"}
 
-		got := splitBranches("* current\n\nDev\nMaster\nremotes/origin/current\nremotes/origin/HEAD -> origin/master", true)
+		got := splitBranches("* current\n\nDev\nMaster\nremotes/origin/current\nremotes/origin/HEAD -> origin/master")
 
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %v want %v", got, want)

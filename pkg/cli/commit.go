@@ -3,7 +3,6 @@ package cli
 import (
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -78,7 +77,10 @@ func workOutFilesToBeCommitted() ([]string, error) {
 	notStaged := git.GetNotStagedFiles(status)
 
 	if len(notStaged) > 0 {
-		stageFiles(notStaged)
+		err := stageFiles(notStaged)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	status, err = getStatus()
@@ -109,7 +111,7 @@ func resolveUntrackedFiles(untrackedFiles []string) {
 	}
 }
 
-func stageFiles(availableFiles []string) {
+func stageFiles(availableFiles []string) error {
 	selectedFiles := askUserToSelectOptions(availableFiles, "Unstaged files. Select files to add.", true)
 
 	if len(selectedFiles) > 0 {
@@ -120,8 +122,13 @@ func stageFiles(availableFiles []string) {
 			filesToAdd = append(filesToAdd, strings.TrimSpace(file))
 		}
 
-		addFiles(filesToAdd)
+		err := addFiles(filesToAdd)
+		if err != nil {
+			return err
+		}
 	}
+
+	return nil
 }
 
 func printSelectedFiles(files []string) {
@@ -132,17 +139,18 @@ func printSelectedFiles(files []string) {
 	}
 }
 
-func addFiles(filesToAdd []string) {
+func addFiles(filesToAdd []string) error {
 	if len(filesToAdd) > 0 {
 
 		printSelectedFiles(filesToAdd)
 
 		_, err := run.RunCommand("git", append([]string{"add"}, filesToAdd...))
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			return err
 		}
 	}
+
+	return nil
 }
 
 func makeCommit() error {

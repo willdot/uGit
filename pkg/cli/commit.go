@@ -33,7 +33,10 @@ func CommitCommand() *cobra.Command {
 }
 
 func commit() error {
-	filesToBeCommitted := workOutFilesToBeCommitted()
+	filesToBeCommitted, err := workOutFilesToBeCommitted()
+	if err != nil {
+		return err
+	}
 	if len(filesToBeCommitted) == 0 {
 		fmt.Println("Nothing to commit")
 		return nil
@@ -44,7 +47,7 @@ func commit() error {
 		fmt.Println(file)
 	}
 
-	err := makeCommit()
+	err = makeCommit()
 	if err != nil {
 		return err
 	}
@@ -56,13 +59,16 @@ func commit() error {
 	return nil
 }
 
-func workOutFilesToBeCommitted() []string {
-	status := getStatus()
+func workOutFilesToBeCommitted() ([]string, error) {
+	status, err := getStatus()
+	if err != nil {
+		return nil, err
+	}
 
 	untrackedFiles, nothingToCommit := git.GetFilesOrNothingToCommit(status)
 
 	if nothingToCommit {
-		return nil
+		return nil, nil
 	}
 
 	if len(untrackedFiles) > 0 {
@@ -75,20 +81,22 @@ func workOutFilesToBeCommitted() []string {
 		stageFiles(notStaged)
 	}
 
-	status = getStatus()
+	status, err = getStatus()
+	if err != nil {
+		return nil, err
+	}
 
-	return git.GetFilesToBeCommitted(status)
+	return git.GetFilesToBeCommitted(status), nil
 }
 
-func getStatus() string {
+func getStatus() (string, error) {
 	status, err := run.RunCommand("git", []string{"status"})
 
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		return "", err
 	}
 
-	return status
+	return status, nil
 }
 
 func resolveUntrackedFiles(untrackedFiles []string) {

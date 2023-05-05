@@ -7,9 +7,8 @@ import (
 
 func askUserToSelectOptions(availableOptions []string, message string, addSelectAll bool) ([]string, error) {
 	options := make([]string, 0, len(availableOptions))
-	for _, opt := range availableOptions {
-		options = append(options, opt)
-	}
+	options = append(options, availableOptions...)
+
 	options = append([]string{"**Exit and ignore selections**"}, options...)
 
 	if addSelectAll {

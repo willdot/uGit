@@ -111,7 +111,10 @@ func resolveUntrackedFiles(untrackedFiles []string) error {
 	}
 
 	if len(selectedFiles) > 0 {
-		addFiles(selectedFiles)
+		err := addFiles(selectedFiles)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

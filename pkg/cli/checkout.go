@@ -13,7 +13,6 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-const exit = "Exit"
 
 var newBranchFlag bool
 
@@ -51,9 +50,7 @@ func checkout() error {
 		return nil
 	}
 
-	performCheckout(branchName, newBranchFlag)
-
-	return nil
+	return performCheckout(branchName, newBranchFlag)
 }
 
 func checkoutNewBranch() error {

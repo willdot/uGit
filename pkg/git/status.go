@@ -82,7 +82,7 @@ func GetNotStagedFiles(s string) []string {
 				}
 
 				if line == "" {
-					if initialBlankLine == false {
+					if !initialBlankLine{
 						initialBlankLine = true
 					} else {
 						// No more files that are not staged
@@ -118,7 +118,7 @@ func GetFilesToBeCommitted(s string) []string {
 				line = strings.TrimSpace(filesToBeCommitted[j])
 
 				if line == "" {
-					if initialBlankLine == false {
+					if !initialBlankLine{
 						initialBlankLine = true
 					} else {
 						// No more files that are not staged

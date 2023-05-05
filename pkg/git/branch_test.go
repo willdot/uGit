@@ -2,31 +2,14 @@ package git
 
 import (
 	"reflect"
-	"strings"
 	"testing"
 )
-
-// FakeCommander is used for mocking
-type FakeCommander struct {
-	Result       string
-	ResultString []string
-	Err          error
-}
-
-func (f *FakeCommander) CommandWithResult() (string, error) {
-
-	if f.Err != nil {
-		return "", f.Err
-	}
-
-	return f.Result, nil
-}
 
 func TestSplitBranch(t *testing.T) {
 	t.Run("Split and keep current", func(t *testing.T) {
 		want := []string{"* current", "Dev", "Master"}
 
-		got := SplitBranches("* current\nDev\nMaster", false)
+		got := splitBranches("* current\nDev\nMaster")
 
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %v want %v", got, want)
@@ -36,7 +19,7 @@ func TestSplitBranch(t *testing.T) {
 	t.Run("Split and remove current", func(t *testing.T) {
 		want := []string{"Dev", "Master"}
 
-		got := SplitBranches("* current\n\nDev\nMaster\nremotes/origin/current", true)
+		got := splitBranches("* current\n\nDev\nMaster\nremotes/origin/current")
 
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %v want %v", got, want)
@@ -46,7 +29,7 @@ func TestSplitBranch(t *testing.T) {
 	t.Run("Split and remove origin head", func(t *testing.T) {
 		want := []string{"Dev", "Master"}
 
-		got := SplitBranches("* current\n\nDev\nMaster\nremotes/origin/current\nremotes/origin/HEAD -> origin/master", true)
+		got := splitBranches("* current\n\nDev\nMaster\nremotes/origin/current\nremotes/origin/HEAD -> origin/master")
 
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %v want %v", got, want)
@@ -57,10 +40,10 @@ func TestSplitBranch(t *testing.T) {
 func TestRemoveCurrentBranch(t *testing.T) {
 	want := []string{"dev", "master"}
 	input := []string{"* current", "dev", "master", "remotes/origin/current"}
-	RemoveCurrentBranch(&input)
+	result := removeCurrentBranch(input)
 
-	if !reflect.DeepEqual(input, want) {
-		t.Errorf("got %v want %v", input, want)
+	if !reflect.DeepEqual(result, want) {
+		t.Errorf("got %v want %v", result, want)
 	}
 }
 
@@ -69,7 +52,7 @@ func TestGetCurrentBranch(t *testing.T) {
 		want := "*Dev"
 
 		input := []string{"", "*Dev", "Master"}
-		got, _ := GetCurrentBranch(input)
+		got, _ := getCurrentBranch(input)
 
 		if got != want {
 			t.Errorf("got %s want %s", got, want)
@@ -78,7 +61,7 @@ func TestGetCurrentBranch(t *testing.T) {
 
 	t.Run("returns error as no current branch found", func(t *testing.T) {
 		input := []string{"Dev", "Master"}
-		_, got := GetCurrentBranch(input)
+		_, got := getCurrentBranch(input)
 
 		if got == nil {
 			t.Fatal("wanted an error but didn't get one")
@@ -91,60 +74,13 @@ func TestGetCurrentBranch(t *testing.T) {
 
 }
 
-func TestGetBranches(t *testing.T) {
-	t.Run("get local branches", func(t *testing.T) {
-		want := []string{}
-
-		fake := &FakeCommander{
-			ResultString: []string(want),
-		}
-
-		got, _ := GetBranches(fake)
-
-		if len(got) != len(want) {
-			t.Errorf("want '%s' but got '%s'", got, want)
-		}
-	})
-}
-
-func TestCheckout(t *testing.T) {
-
-	t.Run("switched branch", func(t *testing.T) {
-		want := "Switched to branch 'fake'"
-
-		fake := &FakeCommander{
-			Result: want,
-		}
-
-		got, _ := CheckoutBranch(fake)
-
-		if !strings.Contains(got, want) {
-			t.Errorf("wanted '%s' but got '%s'", want, got)
-		}
-	})
-
-	t.Run("branch doesn't exist", func(t *testing.T) {
-		want := ErrBranchDoesNotExist
-
-		fake := &FakeCommander{
-			Err: ErrBranchDoesNotExist,
-		}
-
-		_, got := CheckoutBranch(fake)
-
-		if got != want {
-			t.Errorf("wanted '%s' but got '%s'", want, got)
-		}
-	})
-}
-
 func TestRemoveRemoteOriginFromName(t *testing.T) {
 	t.Run("Has remotes origin", func(t *testing.T) {
 		input := "remotes/origin/master"
 
 		want := "master"
 
-		RemoveRemoteOriginFromName(&input)
+		input = RemoveRemoteOriginFromName(input)
 
 		if input != want {
 			t.Errorf("want %s but got %s", want, input)
@@ -157,7 +93,7 @@ func TestRemoveRemoteOriginFromName(t *testing.T) {
 
 		want := "bug/origins"
 
-		RemoveRemoteOriginFromName(&input)
+		input = RemoveRemoteOriginFromName(input)
 
 		if input != want {
 			t.Errorf("want %s but got %s", want, input)

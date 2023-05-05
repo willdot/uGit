@@ -2,20 +2,10 @@ package git
 
 import (
 	"strings"
-
-	"github.com/willdot/uGit/app/pkg/run"
 )
-
-// Status will run git status and return the result
-func Status(commander run.ICommander) (string, error) {
-	result, err := commander.CommandWithResult()
-
-	return string(result), err
-}
 
 // GetFilesOrNothingToCommit will return a slice of files that aren't tracked and if there is nothing to commit, a true flag
 func GetFilesOrNothingToCommit(s string) ([]string, bool) {
-
 	x := strings.Split(s, "\n")
 
 	var result []string

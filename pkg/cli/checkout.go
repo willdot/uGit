@@ -77,11 +77,10 @@ func checkoutNewBranch() error {
 		return nil
 	}
 
-	performCheckout(branchName, newBranchFlag)
-	return nil
+	return performCheckout(branchName, newBranchFlag)
 }
 
-func performCheckout(branchSelection string, new bool) {
+func performCheckout(branchSelection string, new bool) error {
 
 	branchSelection = git.RemoveRemoteOriginFromName(branchSelection)
 
@@ -95,9 +94,10 @@ func performCheckout(branchSelection string, new bool) {
 
 	result, err := run.RunCommand("git", args)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	fmt.Println(result)
+
+	return nil
 }

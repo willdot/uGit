@@ -87,8 +87,7 @@ func handleErrorDelete(err error, branchName string) {
 func forceDeleteBranch(branch string) {
 	result, err := run.RunCommand("git", []string{"branch", "-D", branch})
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatal(err)
 	}
 	fmt.Println(result)
 }

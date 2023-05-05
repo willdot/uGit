@@ -5,7 +5,6 @@ import (
 	"log"
 	"strings"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/willdot/uGit/pkg/git"
 	"github.com/willdot/uGit/pkg/input"
@@ -93,7 +92,8 @@ func performCheckout(branchSelection string, new bool) {
 
 	result, err := run.RunCommand("git", args)
 	if err != nil {
-		fmt.Printf("error: %v", errors.WithMessage(err, ""))
+		fmt.Println(err)
+		return
 	}
 
 	fmt.Println(result)

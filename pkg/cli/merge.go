@@ -27,7 +27,6 @@ func MergeCommand() *cobra.Command {
 
 func merge() error {
 	branches, err := git.GetBranches()
-
 	if err != nil {
 		return err
 	}

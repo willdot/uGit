@@ -22,7 +22,7 @@ func GetBranches() ([]string, error) {
 		return nil, err
 	}
 
-	branches := splitBranches(result, true)
+	branches := splitBranches(result)
 
 	return branches, nil
 }
@@ -38,15 +38,13 @@ func RemoveRemoteOriginFromName(branch string) string {
 	return branch
 }
 
-func splitBranches(s string, removeCurrent bool) []string {
+func splitBranches(s string) []string {
 
 	branches := strings.Split(s, "\n")
 	branches = trimSlice(branches)
 
-	if removeCurrent {
-		branches = removeCurrentBranch(branches)
-		branches = removeOriginHead(branches)
-	}
+	branches = removeCurrentBranch(branches)
+	branches = removeOriginHead(branches)
 
 	branches = filterSlice(branches)
 

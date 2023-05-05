@@ -50,21 +50,21 @@ func delete() error {
 func deleteBranch(branch string) string {
 	result, err := run.RunCommand("git", []string{"branch", "-d", branch})
 	if err != nil {
-		handleErrorDelete(result, branch)
+		handleErrorDelete(err, branch)
 		return ""
 	}
 
 	return result
 }
 
-func handleErrorDelete(errorMessage, branchName string) {
-	lines := strings.Split(errorMessage, "\n")
+func handleErrorDelete(err error, branchName string) {
+	lines := strings.Split(err.Error(), "\n")
 	if len(lines) == 0 {
 		return
 	}
 
 	if !strings.Contains(lines[1], "If you are sure you want to delete it, run 'git branch -D") {
-		fmt.Println(errorMessage)
+		fmt.Println(err)
 	}
 
 	res := askUserToSelectSingleOption([]string{"yes", "no"}, "Would you like to force delete this branch?")
@@ -81,7 +81,6 @@ func handleErrorDelete(errorMessage, branchName string) {
 func forceDeleteBranch(branch string) {
 	result, err := run.RunCommand("git", []string{"branch", "-D", branch})
 	if err != nil {
-		fmt.Println(result)
 		fmt.Println(err)
 		return
 	}

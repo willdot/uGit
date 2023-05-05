@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/willdot/uGit/pkg/git"
 	"github.com/willdot/uGit/pkg/input"
@@ -85,7 +84,7 @@ func getStatus() string {
 	status, err := run.RunCommand("git", []string{"status"})
 
 	if err != nil {
-		fmt.Printf("error: %v", errors.WithMessage(err, ""))
+		fmt.Println(err)
 		os.Exit(1)
 	}
 
@@ -131,9 +130,8 @@ func addFiles(filesToAdd []string) {
 		printSelectedFiles(filesToAdd)
 
 		_, err := run.RunCommand("git", append([]string{"add"}, filesToAdd...))
-
 		if err != nil {
-			fmt.Printf("Prompt failed %v\n", err)
+			fmt.Println(err)
 			os.Exit(1)
 		}
 	}
@@ -164,7 +162,6 @@ func makeCommit() error {
 	}
 
 	commitResult, err := run.RunCommand("git", []string{"commit", "-m", commitMessage})
-
 	if err != nil {
 		return err
 	}
@@ -182,7 +179,7 @@ func push() {
 		return
 	}
 
-	handleErrorPush(result)
+	handleErrorPush(err)
 }
 
 func pushSetUpstream(command string) {
@@ -198,11 +195,11 @@ func pushSetUpstream(command string) {
 	fmt.Println(result)
 }
 
-func handleErrorPush(errorMessage string) {
-	lines := strings.Split(errorMessage, "\n")
+func handleErrorPush(err error) {
+	lines := strings.Split(err.Error(), "\n")
 
 	for _, line := range lines {
-		if strings.HasPrefix(line, "To push the current branch and set the remote as upstream, use") {
+		if strings.Contains(line, "To push the current branch and set the remote as upstream, use") {
 			fmt.Println(lines[0])
 
 			result := false
